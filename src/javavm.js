@@ -6,6 +6,5 @@ function JavaVM(className, files) {
     this.pc = null;
     this.stack = new Array();
     this.heap = null;
-
-    
+    this.classLoader = new ClassLoader();
 }
