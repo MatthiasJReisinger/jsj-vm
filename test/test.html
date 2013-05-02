@@ -1,0 +1,17 @@
+<script src="../bin/jsj-vm.js"></script>
+<input type="file" id="files" name="files[]" multiple />
+<div id="list"></div>
+
+<script>
+    document.getElementById('files').addEventListener('change', main, false);
+    function main(evt) {
+        var fileLoader = new FileLoader();
+        fileLoader.setCallback(startJavaVM);
+        fileLoader.load(evt.target.files);
+    }
+
+    function startJavaVM(files) {
+        console.log("start VM");
+        
+    }
+</script>
