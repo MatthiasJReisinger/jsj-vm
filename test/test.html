@@ -1,17 +1,21 @@
-<script src="../bin/jsj-vm.js"></script>
-<input type="file" id="files" name="files[]" multiple />
-<div id="list"></div>
+<!DOCTYPE HTML> 
+<html> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <title>jsjVM Test</title> 
+        <script src="../bin/jsj-vm.js"></script>
+        <script>
+            window.onload = function () {
+                document.getElementById('files').addEventListener('change', start, false);
+            }
 
-<script>
-    document.getElementById('files').addEventListener('change', main, false);
-    function main(evt) {
-        var fileLoader = new FileLoader();
-        fileLoader.setCallback(startJavaVM);
-        fileLoader.load(evt.target.files);
-    }
-
-    function startJavaVM(files) {
-        console.log("start VM");
-        
-    }
-</script>
+            function start(evt) {
+                new JavaVM('Test', evt.target.files);
+            }
+        </script>
+    </head>
+    <body> 
+        <p>Load your files:</p> 
+        <input type="file" id="files" name="files[]" multiple/>
+   </body> 
+</html>
