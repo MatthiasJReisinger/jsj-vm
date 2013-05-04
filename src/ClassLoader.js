@@ -13,10 +13,20 @@ function ClassLoader(classFiles) {
  */
 ClassLoader.prototype.loadClass = function(className) {
     var classFile = this.getClassFile(className);
-    var loadedClass = new Class();
-    console.log(classFile);
-    console.log(classFile.getBytes()[0]);
-    return loadedClass;
+    var parser = new ClassFileParser();
+    var parsedClassFile = parser.parse(classFile);
+    console.log(parsedClassFile);
+
+    /*
+    loadedClass.setPublicFlag((accessFlags & 0x0001) != 0);
+    loadedClass.setFinalFlag((accessFlags & 0x0010) != 0);
+    loadedClass.setSuperFlag((accessFlags & 0x0020) != 0);
+    loadedClass.setInterfaceFlag((accessFlags & 0x0200) != 0);
+    loadedClass.setAbstractFlag((accessFlags & 0x0400) != 0);
+    loadedClass.setSyntheticFlag((accessFlags & 0x1000) != 0);
+    loadedClass.setAnnotationFlag((accessFlags & 0x2000) != 0);
+    loadedClass.setEnumFlag((accessFlags & 0x4000) != 0);
+    */
 }
 
 ClassLoader.prototype.getClassFile = function(className) {
