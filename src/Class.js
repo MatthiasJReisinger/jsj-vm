@@ -20,16 +20,3 @@ function Class() {
     this.superClass = null;
 }
 
-/**
- * 
- */
-Class.prototype.setRuntimeConstantPool = function(constantPool) {
-    this.runtimeConstantPool = constantPool;
-}
-
-/**
- * @return the runtime constant pool of the class
- */
-Class.prototype.getRuntimeConstantPool = function() {
-    return this.runtimeConstantPool;
-}

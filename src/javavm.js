@@ -27,7 +27,7 @@ JavaVM.prototype.loadFiles = function(files) {
 
 finishedReading = function(evt) {
     var bytes = new Uint8Array(evt.target.result);
-    this.classFiles[0].bytes = bytes;
+    this.classFiles[0].setBytes(bytes);
     this.javaVM.classLoader = new ClassLoader(this.classFiles);
     this.javaVM.start();
 }
