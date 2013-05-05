@@ -1,2 +1,2 @@
-function Frame() {
+jsjvm.Frame = function() {
 }

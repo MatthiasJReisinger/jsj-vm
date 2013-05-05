@@ -1,7 +1,7 @@
 /**
  * Represents a java class
  */
-jsjVM.Class = function() {
+jsjvm.Class = function() {
     this.runtimeConstantPool = null;
 
     /**
@@ -20,42 +20,42 @@ jsjVM.Class = function() {
     this.superClass = null;
 }
 
-jsjVM.Class.prototype.setRuntimeConstantPool = function(pool) {
+jsjvm.Class.prototype.setRuntimeConstantPool = function(pool) {
     this.runtimeConstantPool = pool;
 }
 
-jsjVM.Class.prototype.getRuntimeConstantPool = function() {
+jsjvm.Class.prototype.getRuntimeConstantPool = function() {
     return this.runtimeConstantPool;
 }
 
-jsjVM.Class.prototype.setPublicFlag = function(publicFlag) {
+jsjvm.Class.prototype.setPublicFlag = function(publicFlag) {
     this.publicFlag = publicFlag;
 }
 
-jsjVM.Class.prototype.setFinalFlag = function(finalFlag) {
+jsjvm.Class.prototype.setFinalFlag = function(finalFlag) {
     this.finalFlag = finalFlag;
 }
 
-jsjVM.Class.prototype.setSuperFlag = function(superFlag) {
+jsjvm.Class.prototype.setSuperFlag = function(superFlag) {
     this.superFlag = superFlag;
 }
 
-jsjVM.Class.prototype.setInterfaceFlag = function(interfaceFlag) {
+jsjvm.Class.prototype.setInterfaceFlag = function(interfaceFlag) {
     this.interfaceFlag = interfaceFlag;
 }
 
-jsjVM.Class.prototype.setAbstractFlag = function(abstractFlag) {
+jsjvm.Class.prototype.setAbstractFlag = function(abstractFlag) {
     this.abstractFlag = abstractFlag;
 }
 
-jsjVM.Class.prototype.setSyntheticFlag = function(syntheticFlag) {
+jsjvm.Class.prototype.setSyntheticFlag = function(syntheticFlag) {
     this.syntheticFlag = syntheticFlag;
 }
 
-jsjVM.Class.prototype.setAnnotationFlag = function(annotationFlag) {
+jsjvm.Class.prototype.setAnnotationFlag = function(annotationFlag) {
     this.annotationFlag = annotationFlag;
 }
 
-jsjVM.Class.prototype.setEnumFlag = function(enumFlag) {
+jsjvm.Class.prototype.setEnumFlag = function(enumFlag) {
     this.enumFlag = enumFlag;
 }

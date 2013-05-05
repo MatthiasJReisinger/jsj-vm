@@ -5,7 +5,7 @@
  * @param string className the name of the class containing the main method
  * @param FileList files the .class files needed for execution
  */
-function JavaVM(className, files) {
+jsjvm.JavaVM = function(className, files) {
     this.mainClassName = className;
     this.pc = null;
     this.stack = new Array();
@@ -15,23 +15,23 @@ function JavaVM(className, files) {
     this.loadFiles(files);
 }
 
-JavaVM.prototype.loadFiles = function(files) {
+jsjvm.JavaVM.prototype.loadFiles = function(files) {
     var reader = new FileReader();
     reader.javaVM = this;
     reader.classFiles = new Array();
-    var classFile = new ClassFile(files[0].name);
+    var classFile = new jsjvm.classfile.ClassFile(files[0].name);
     reader.classFiles.push(classFile);
-    reader.onload = finishedReading;
+    reader.onload = jsjvm.finishedReading;
     reader.readAsArrayBuffer(files[0]);
 }
 
-finishedReading = function(evt) {
+jsjvm.finishedReading = function(evt) {
     var bytes = new Uint8Array(evt.target.result);
     this.classFiles[0].setBytes(bytes);
-    this.javaVM.classLoader = new ClassLoader(this.classFiles);
+    this.javaVM.classLoader = new jsjvm.ClassLoader(this.classFiles);
     this.javaVM.start();
 }
 
-JavaVM.prototype.start = function() {
+jsjvm.JavaVM.prototype.start = function() {
     var mainClass = this.classLoader.loadClass(this.mainClassName);
 }

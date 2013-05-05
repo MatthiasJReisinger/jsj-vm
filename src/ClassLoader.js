@@ -4,16 +4,16 @@
  * @param Array classFiles the class files to be used when loading
  * a class
  */
-function ClassLoader(classFiles) {
+jsjvm.ClassLoader = function(classFiles) {
     this.classFiles = classFiles;
 }
 
 /**
  * @param className the name of the class to be loaded
  */
-ClassLoader.prototype.loadClass = function(className) {
+jsjvm.ClassLoader.prototype.loadClass = function(className) {
     var classFile = this.getClassFile(className);
-    var parser = new ClassFileParser();
+    var parser = new jsjvm.classfile.Parser();
     var parsedClassFile = parser.parse(classFile);
     console.log(parsedClassFile);
 
@@ -29,7 +29,7 @@ ClassLoader.prototype.loadClass = function(className) {
     */
 }
 
-ClassLoader.prototype.getClassFile = function(className) {
+jsjvm.ClassLoader.prototype.getClassFile = function(className) {
     var fileName = className + ".class";
     for (var i = 0; i < this.classFiles.length; i++) {
         var classFile = this.classFiles[i];
