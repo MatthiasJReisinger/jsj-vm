@@ -1,6 +1,33 @@
 function ClassFileParser() {
 }
 
+function Method_info() {
+    var access_flags;
+    var name_index;
+    var descriptor_index;
+    var attributes_count;
+    var attributes;
+}
+
+function Attribute_info() {
+    var attribute_name_index;
+    var attribute_length;
+    var info;
+}
+
+function Code_attribute() {
+    var attribute_name_index;
+    var attribute_length;
+    var max_stack;
+    var max_locals;
+    var code_length;
+    var code;
+    var exception_table_length;
+    var exception_table;
+    var attributes_count;
+    var attributes;
+}
+
 /**
  * @param ClassFile the class file to be parsed
  * @return ParsedClassFile the parsed representation of the given class file.
@@ -116,13 +143,15 @@ ClassFileParser.prototype.parse = function(classFile) {
     }
 
     /* parse field: access_flags */
-    var accessFlags = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
-        currentOffset += 2;
+    parsedClassFile.access_flags = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+    currentOffset += 2;
 
     /* parse field: this_class */
+    parsedClassFile.this_class = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     currentOffset += 2;
 
     /* parse field: super_class */
+    parsedClassFile.super_class = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     currentOffset += 2;
 
     /* parse field: interface_count */
@@ -170,32 +199,50 @@ ClassFileParser.prototype.parse = function(classFile) {
     currentOffset += 2;
 
     /* parse field: methods */
+    parsedClassFile.methods = new Array(parsedClassFile.methods_count);
     for (var i = 0; i < parsedClassFile.methods_count; i++) {
+        var methodInfo = new Method_info();
+
         /* parse field: access_flags */
+        methodInfo.access_flags = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
         currentOffset += 2;
 
         /* parse field: name_index */
+        methodInfo.name_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
         currentOffset += 2;
 
         /* parse field: descriptor_index */
+        methodInfo.descriptor_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
         currentOffset += 2;
 
         /* parse field: attributes_count */
-        var attributesCount = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+        methodInfo.attributes_count = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
         currentOffset += 2;
 
-        /* parse field: attribute_info */
-        for (var j = 0; j < attributesCount; j++) {
-            /* parse field: attribute_name_index */
-            currentOffset += 2;
+        /* parse field: attributes */
+        methodInfo.attributes = new Array(methodInfo.attributes_count);
+        for (var j = 0; j < methodInfo.attributes_count; j++) {
+            var attributeInfo = new Attribute_info();
+            if (j == 0) {
+                attributeInfo = new Code_attribute();
+                
+            } else {
+                /* parse field: attribute_name_index */
+                attributeInfo.attribute_name_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+                currentOffset += 2;
 
-            /* parse field: attribute_length */
-            var attributeLength = this.getIntFromBytes(classFile.getBytes(), currentOffset, 4);
-            currentOffset += 4;
+                /* parse field: attribute_length */
+                attributeInfo.attribute_length = this.getIntFromBytes(classFile.getBytes(), currentOffset, 4);
+                currentOffset += 4;
 
-            /* parse field: info (each element is 1 byte long) */
-            currentOffset += attributeLength;
+                /* parse field: info (each element is 1 byte long) */
+                currentOffset += attributeInfo.attribute_length;
+            }
+
+            methodInfo.attributes[j] = attributeInfo;
         }
+        
+        parsedClassFile.methods[i] = methodInfo;
     }
 
     /* parse field: attributes_count */

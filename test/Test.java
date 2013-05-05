@@ -1,8 +1,5 @@
 public final class Test {
-    public int c;
-    public int d;
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         int a = 35;
     }   
 }
