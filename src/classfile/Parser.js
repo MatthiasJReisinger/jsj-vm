@@ -12,31 +12,31 @@ jsjvm.classfile.Parser.prototype.parse = function(classFile) {
     var currentOffset = 0;
     
     /* parse field: magic */
-    parsedClassFile.magic = this.getIntFromBytes(classFile.getBytes(), currentOffset, 4);
+    parsedClassFile.magic = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 4);
     currentOffset += 4;
 
     /* parse field: minor_version */
-    parsedClassFile.minor_version = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+    parsedClassFile.minor_version = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     currentOffset += 2;
     
     /* parse field: major_version */
-    parsedClassFile.major_version = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+    parsedClassFile.major_version = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     currentOffset += 2;
 
     /* parse field: constant_pool_count field */
-    parsedClassFile.constant_pool_count = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+    parsedClassFile.constant_pool_count = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     parsedClassFile.constant_pool = new Array(parsedClassFile.constant_pool_count);
     currentOffset += 2;
 
     /* parse field: constant_pool */
     for (var i = 1; i <= parsedClassFile.constant_pool_count - 1; i++) {
         var info_struct = {};
-        info_struct.tag = this.getIntFromBytes(classFile.getBytes(), currentOffset, 1);
+        info_struct.tag = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 1);
         currentOffset++;
         switch (info_struct.tag) {
             case 1:
                 /* CONSTANT_Utf8 */
-                info_struct.length = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+                info_struct.length = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
                 currentOffset += 2;
                 // TODO parse characters
                 info_struct.bytes = classFile.getBytes().subarray(currentOffset, currentOffset + info_struct.length);
@@ -44,7 +44,7 @@ jsjvm.classfile.Parser.prototype.parse = function(classFile) {
                 break;
             case 3:
                 /* CONSTANT_Integer */
-                info_struct.bytes = this.getIntFromBytes(classFile.getBytes(), currentOffset, 4);
+                info_struct.bytes = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 4);
                 currentOffset += 4;
                 break;
             case 4:
@@ -70,12 +70,12 @@ jsjvm.classfile.Parser.prototype.parse = function(classFile) {
                 break;
             case 7:
                 /* CONSTANT_Class */
-                info_struct.name_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+                info_struct.name_index = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
                 currentOffset += 2;
                 break;
             case 8:
                 /* CONSTANT_String */
-                info_struct.string_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+                info_struct.string_index = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
                 currentOffset += 2;
                 break;
             case 9:
@@ -84,16 +84,16 @@ jsjvm.classfile.Parser.prototype.parse = function(classFile) {
                 /* CONSTANT_Methodref */
             case 11:
                 /* CONSTANT_InterfaceMethodref */
-                info_struct.class_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+                info_struct.class_index = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
                 currentOffset += 2;
-                info_struct.name_and_type_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+                info_struct.name_and_type_index = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
                 currentOffset += 2;
                 break;
             case 12:
                 /* CONSTANT_NameAndType */
-                info_struct.name_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+                info_struct.name_index = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
                 currentOffset += 2
-                info_struct.descriptor_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+                info_struct.descriptor_index = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
                 currentOffset += 2;
                 break;
             case 15:
@@ -116,26 +116,26 @@ jsjvm.classfile.Parser.prototype.parse = function(classFile) {
     }
 
     /* parse field: access_flags */
-    parsedClassFile.access_flags = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+    parsedClassFile.access_flags = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     currentOffset += 2;
 
     /* parse field: this_class */
-    parsedClassFile.this_class = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+    parsedClassFile.this_class = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     currentOffset += 2;
 
     /* parse field: super_class */
-    parsedClassFile.super_class = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+    parsedClassFile.super_class = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     currentOffset += 2;
 
     /* parse field: interface_count */
-    parsedClassFile.interface_count = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+    parsedClassFile.interface_count = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     currentOffset += 2;
 
     /* parse field: interfaces */
     currentOffset += 2 * parsedClassFile.interface_count;
 
     /* parse field: fields_count */
-    parsedClassFile.fields_count = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+    parsedClassFile.fields_count = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     currentOffset += 2;
 
     /* parse field: fields */
@@ -150,7 +150,7 @@ jsjvm.classfile.Parser.prototype.parse = function(classFile) {
         currentOffset += 2;
 
         /* parse field: attributes_count */
-        var attributesCount = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+        var attributesCount = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
         currentOffset += 2;
 
         /* parse field: attributes */
@@ -159,7 +159,7 @@ jsjvm.classfile.Parser.prototype.parse = function(classFile) {
             currentOffset += 2;
 
             /* parse field: attribute_length */
-            var attributeLength = this.getIntFromBytes(classFile.getBytes(), currentOffset, 4);
+            var attributeLength = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 4);
             currentOffset += 4;
 
             /* parse field: info (each element is 1 byte long) */
@@ -168,7 +168,7 @@ jsjvm.classfile.Parser.prototype.parse = function(classFile) {
     }
 
     /* parse field: methods_count */
-    parsedClassFile.methods_count = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+    parsedClassFile.methods_count = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     currentOffset += 2;
 
     /* parse field: methods */
@@ -177,59 +177,41 @@ jsjvm.classfile.Parser.prototype.parse = function(classFile) {
         var methodInfo = new jsjvm.classfile.MethodInfo();
 
         /* parse field: access_flags */
-        methodInfo.access_flags = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+        methodInfo.access_flags = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
         currentOffset += 2;
 
         /* parse field: name_index */
-        methodInfo.name_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+        methodInfo.name_index = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
         currentOffset += 2;
 
         /* parse field: descriptor_index */
-        methodInfo.descriptor_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+        methodInfo.descriptor_index = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
         currentOffset += 2;
 
         /* parse field: attributes_count */
-        methodInfo.attributes_count = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+        methodInfo.attributes_count = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
         currentOffset += 2;
 
         /* parse field: attributes */
         methodInfo.attributes = new Array(methodInfo.attributes_count);
+        var attributeInfoFactory = new jsjvm.classfile.AttributeInfoFactory();
         for (var j = 0; j < methodInfo.attributes_count; j++) {
-            var attributeInfo = new jsjvm.classfile.AttributeInfo();
-            if (j < 0) {
-                attributeInfo = new jsjvm.classfile.CodeAttribute();
-            } else {
-                /* parse field: attribute_name_index */
-                attributeInfo.attribute_name_index = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
-                currentOffset += 2;
-
-                /* parse field: attribute_length */
-                attributeInfo.attribute_length = this.getIntFromBytes(classFile.getBytes(), currentOffset, 4);
-                currentOffset += 4;
-
-                /* parse field: info (each element is 1 byte long) */
-                currentOffset += attributeInfo.attribute_length;
-            }
-
+            var attributeInfo = attributeInfoFactory.create(j);
+            currentOffset = attributeInfo.parse(classFile, currentOffset);
             methodInfo.attributes[j] = attributeInfo;
         }
-        
+      
         parsedClassFile.methods[i] = methodInfo;
     }
 
     /* parse field: attributes_count */
-    parsedClassFile.attributes_count = this.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
+    parsedClassFile.attributes_count = jsjvm.classfile.getIntFromBytes(classFile.getBytes(), currentOffset, 2);
     currentOffset += 2;
 
     /* parse field: attributes */
+    for (var i = 0; i < parsedClassFile.attributes_count; i++) {
+        var attributeInfo = new jsjvm.classfile.AttributeInfo();
+    }
 
     return parsedClassFile;
-}
-
-jsjvm.classfile.Parser.prototype.getIntFromBytes = function(bytes, offset, length) {
-    var intValue = 0;
-    for (var i = 0; i < length; i++) {
-        intValue += bytes[offset + i] * Math.pow(2, 8 * (length - 1 - i));
-    }
-    return intValue;
 }

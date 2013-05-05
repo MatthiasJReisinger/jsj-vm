@@ -1,5 +1,5 @@
 TARGET_DIR=target
-TARGET=jsj-vm.js
+TARGET=jsjvm.js
 
 all:
 	mkdir -p $(TARGET_DIR)
