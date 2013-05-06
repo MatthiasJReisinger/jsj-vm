@@ -1,7 +1,16 @@
 jsjvm.clazz.MethodInfo = function() {
-    var access_flags;
-    var name_index;
-    var descriptor_index;
-    var attributes_count;
-    var attributes;
+    this.access_flags;
+    this.name;
+    this.descriptor_index;
+    this.attributes;
+}
+
+jsjvm.clazz.MethodInfo.prototype.getMaxStackSize = function() {
+    var codeAttribute = this.attributes[0];
+    return codeAttribute.max_stack;
+}
+
+jsjvm.clazz.MethodInfo.prototype.getNumberOfLocalVariables = function() {
+    var codeAttribute = this.attributes[0];
+    return codeAttribute.max_locals;
 }

@@ -34,5 +34,19 @@ jsjvm.finishedReading = function(evt) {
 
 jsjvm.JavaVM.prototype.start = function() {
     var mainClass = this.classLoader.loadClass(this.mainClassName);
-    this.pc = 0;
+    console.log(mainClass);
+    var mainMethod = mainClass.getMethod("main");
+    console.log(mainMethod);
+    var frame = new jsjvm.Frame(mainMethod);
+    this.stack.push(frame);
+    console.log(this.stack);
+}
+
+jsjvm.JavaVM.prototype.getCurrentFrame = function() {
+    var stackSize = this.stack.length;
+    return this.stack[stackSize - 1];
+}
+
+jsjvm.JavaVM.prototype.execute = function() {
+
 }
