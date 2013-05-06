@@ -19,7 +19,7 @@ jsjvm.JavaVM.prototype.loadFiles = function(files) {
     var reader = new FileReader();
     reader.javaVM = this;
     reader.classFiles = new Array();
-    var classFile = new jsjvm.classfile.ClassFile(files[0].name);
+    var classFile = new jsjvm.File(files[0].name);
     reader.classFiles.push(classFile);
     reader.onload = jsjvm.finishedReading;
     reader.readAsArrayBuffer(files[0]);

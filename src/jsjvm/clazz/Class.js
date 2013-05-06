@@ -1,7 +1,7 @@
 /**
  * Represents a java class
  */
-jsjvm.Class = function() {
+jsjvm.clazz.Class = function() {
     this.runtimeConstantPool = null;
 
     /**
@@ -18,44 +18,46 @@ jsjvm.Class = function() {
 
     this.className = null;
     this.superClass = null;
+
+    this.methods = null;
 }
 
-jsjvm.Class.prototype.setRuntimeConstantPool = function(pool) {
+jsjvm.clazz.Class.prototype.setRuntimeConstantPool = function(pool) {
     this.runtimeConstantPool = pool;
 }
 
-jsjvm.Class.prototype.getRuntimeConstantPool = function() {
+jsjvm.clazz.Class.prototype.getRuntimeConstantPool = function() {
     return this.runtimeConstantPool;
 }
 
-jsjvm.Class.prototype.setPublicFlag = function(publicFlag) {
+jsjvm.clazz.Class.prototype.setPublicFlag = function(publicFlag) {
     this.publicFlag = publicFlag;
 }
 
-jsjvm.Class.prototype.setFinalFlag = function(finalFlag) {
+jsjvm.clazz.Class.prototype.setFinalFlag = function(finalFlag) {
     this.finalFlag = finalFlag;
 }
 
-jsjvm.Class.prototype.setSuperFlag = function(superFlag) {
+jsjvm.clazz.Class.prototype.setSuperFlag = function(superFlag) {
     this.superFlag = superFlag;
 }
 
-jsjvm.Class.prototype.setInterfaceFlag = function(interfaceFlag) {
+jsjvm.clazz.Class.prototype.setInterfaceFlag = function(interfaceFlag) {
     this.interfaceFlag = interfaceFlag;
 }
 
-jsjvm.Class.prototype.setAbstractFlag = function(abstractFlag) {
+jsjvm.clazz.Class.prototype.setAbstractFlag = function(abstractFlag) {
     this.abstractFlag = abstractFlag;
 }
 
-jsjvm.Class.prototype.setSyntheticFlag = function(syntheticFlag) {
+jsjvm.clazz.Class.prototype.setSyntheticFlag = function(syntheticFlag) {
     this.syntheticFlag = syntheticFlag;
 }
 
-jsjvm.Class.prototype.setAnnotationFlag = function(annotationFlag) {
+jsjvm.clazz.Class.prototype.setAnnotationFlag = function(annotationFlag) {
     this.annotationFlag = annotationFlag;
 }
 
-jsjvm.Class.prototype.setEnumFlag = function(enumFlag) {
+jsjvm.clazz.Class.prototype.setEnumFlag = function(enumFlag) {
     this.enumFlag = enumFlag;
 }
