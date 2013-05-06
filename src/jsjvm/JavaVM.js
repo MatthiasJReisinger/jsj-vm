@@ -28,10 +28,11 @@ jsjvm.JavaVM.prototype.loadFiles = function(files) {
 jsjvm.finishedReading = function(evt) {
     var bytes = new Uint8Array(evt.target.result);
     this.classFiles[0].setBytes(bytes);
-    this.javaVM.classLoader = new jsjvm.ClassLoader(this.classFiles);
+    this.javaVM.classLoader = new jsjvm.classloader.ClassLoader(this.classFiles);
     this.javaVM.start();
 }
 
 jsjvm.JavaVM.prototype.start = function() {
     var mainClass = this.classLoader.loadClass(this.mainClassName);
+    this.pc = 0;
 }

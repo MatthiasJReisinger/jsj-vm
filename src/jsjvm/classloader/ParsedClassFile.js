@@ -7,7 +7,7 @@
  * jsjvm.Class object that will be stored within the method
  * area of the Java Virtual Machine.
  */
-jsjvm.classfile.ParsedClassFile = function() {
+jsjvm.classloader.ParsedClassFile = function() {
     var magic;
     var minor_version;
     var major_version;

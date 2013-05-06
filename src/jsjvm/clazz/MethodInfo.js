@@ -1,4 +1,4 @@
-jsjvm.classfile.MethodInfo = function() {
+jsjvm.clazz.MethodInfo = function() {
     var access_flags;
     var name_index;
     var descriptor_index;
