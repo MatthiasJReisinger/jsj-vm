@@ -7,9 +7,7 @@
  */
 jsjvm.JavaVM = function(className, files) {
     this.mainClassName = className;
-    this.pc = null;
     this.stack = new Array();
-    this.heap = null;
     this.classLoader = null;
 
     this.loadFiles(files);
@@ -39,7 +37,12 @@ jsjvm.JavaVM.prototype.start = function() {
     console.log(mainMethod);
     var frame = new jsjvm.Frame(mainMethod);
     this.stack.push(frame);
-    console.log(this.stack);
+
+    /* start interpreter */
+    this.execute();
+
+    /* shutdown */
+    console.log("shutdown");
 }
 
 jsjvm.JavaVM.prototype.getCurrentFrame = function() {
@@ -48,5 +51,26 @@ jsjvm.JavaVM.prototype.getCurrentFrame = function() {
 }
 
 jsjvm.JavaVM.prototype.execute = function() {
+    while (!this.isStackEmpty()) {
+        var frame = this.getCurrentFrame();
+        var opCode = 177;
 
+
+        return_from_current_method:
+            this.stack.pop();
+            continue;
+        switch (opCode) {
+            case (177): /* return */
+                continue return_from_current_method;
+            default:
+                throw "UnknownOpCodeError";
+                break;
+        }
+
+        this.stack.pop();
+    }
+}
+
+jsjvm.JavaVM.prototype.isStackEmpty = function() {
+    return this.stack.length == 0;
 }
