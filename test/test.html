@@ -11,8 +11,9 @@
             }
 
             function start(evt) {
-                jsjvm.Screen.init(document.getElementById("screenContent"));
-                new jsjvm.JavaVM('Test', evt.target.files);
+                new jsjvm.JavaVM('Test', 
+                                 evt.target.files,
+                                 document.getElementById("screenContent"));
             }
         </script>
     </head>

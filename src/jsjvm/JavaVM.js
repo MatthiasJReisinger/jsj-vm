@@ -4,11 +4,14 @@
  *
  * @param string className the name of the class containing the main method
  * @param FileList files the .class files needed for execution
+ * @param outputElement the html element that is used to print the output
+ * of the java vm
  */
-jsjvm.JavaVM = function(className, files) {
+jsjvm.JavaVM = function(className, files, outputElement) {
     this.mainClassName = className;
     this.stack = new Array();
     this.classLoader = null;
+    this.outputElement = outputElement;
 
     this.loadFiles(files);
 }
@@ -110,12 +113,12 @@ jsjvm.JavaVM.prototype.readNextIntegral = function(numberOfBytes) {
  *****************************************************************************/
 
 jsjvm.JavaVM.prototype.abort = function(message) {
-    jsjvm.Screen.println("[ERROR] " + message);
+    this.log("[ERROR] " + message);
     throw "JavaVM Error";
 }
 
 jsjvm.JavaVM.prototype.log = function(message) {
-    jsjvm.Screen.println(message);
+    this.outputElement.innerHTML += "> " + message + "</br>";
 }
 
 jsjvm.JavaVM.prototype.logCurrentFrame = function() {
