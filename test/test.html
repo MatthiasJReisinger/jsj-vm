@@ -2,7 +2,8 @@
 <html> 
     <head> 
         <meta charset="UTF-8"> 
-        <title>jsjVM Test</title> 
+        <title>jsjVM Test</title>
+        <link rel="stylesheet" type="text/css" href="test.css">
         <script src="../target/jsjvm.js"></script>
         <script>
             window.onload = function () {
@@ -10,12 +11,26 @@
             }
 
             function start(evt) {
+                jsjvm.Screen.init(document.getElementById("screenContent"));
                 new jsjvm.JavaVM('Test', evt.target.files);
             }
         </script>
     </head>
     <body> 
-        <p>Load your files:</p> 
         <input type="file" id="files" name="files[]" multiple/>
+        <div id="screen">
+            <div id="header">Jsj VM</div>
+            <div id="subheader">
+                *****************</br>
+                *&nbsp;&nbsp;Version 0.1&nbsp;&nbsp;*</br>
+                *****************
+            </div>
+            <div id="screenContent">
+                &#62; ready to rumble...</br>
+            </div>
+            <div id="cursor">
+                &#62;
+            </div>
+        </div>
    </body> 
-</html>
+

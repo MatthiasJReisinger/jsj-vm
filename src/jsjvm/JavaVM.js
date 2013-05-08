@@ -110,12 +110,12 @@ jsjvm.JavaVM.prototype.readNextIntegral = function(numberOfBytes) {
  *****************************************************************************/
 
 jsjvm.JavaVM.prototype.abort = function(message) {
-    console.log("[JSJVM Error] " + message);
+    jsjvm.Screen.println("[ERROR] " + message);
     throw "JavaVM Error";
 }
 
 jsjvm.JavaVM.prototype.log = function(message) {
-    console.log("[JSJVM Info] " + message);
+    jsjvm.Screen.println(message);
 }
 
 jsjvm.JavaVM.prototype.logCurrentFrame = function() {
