@@ -1,9 +1,9 @@
-jsjvm.Frame = function(methodInfo) {
+jsjvm.Frame = function(methodInfo, constantPool) {
     this.pc = 0;
     this.localVariables = new Array(methodInfo.getNumberOfLocalVariables());
     this.operandStack = new Array();
-    //this.operandStack = new Array(methodInfo.getMaxStackSize());
     this.method = methodInfo;
+    this.constantPool = constantPool;
 }
 
 jsjvm.Frame.prototype.getPc = function() {

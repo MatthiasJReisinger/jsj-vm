@@ -40,7 +40,7 @@ jsjvm.finishedReading = function(evt) {
 jsjvm.JavaVM.prototype.start = function() {
     var mainClass = this.classLoader.loadClass(this.mainClassName);
     var mainMethod = mainClass.getMethod("main");
-    var frame = new jsjvm.Frame(mainMethod);
+    var frame = new jsjvm.Frame(mainMethod, mainClass.getConstantPool());
     this.stack.push(frame);
 
     console.log(frame.getMethod().getCode());
@@ -59,17 +59,15 @@ jsjvm.JavaVM.prototype.start = function() {
 jsjvm.JavaVM.prototype.execute = function() {
     while (!this.isStackEmpty()) {
         var opCode = this.readNextOpCode();
-
-        this.log("parsed op code: " + opCode);
-
         var instruction = this["op" + opCode];
         if (instruction != null) {
+            this.log("Execute instruction: " + opCode);
             instruction.call(this);
+            this.logCurrentFrame();
+            this.log("");
         } else {
             this.abort("unknown opcode: " + opCode);
         }
-
-        this.logCurrentFrame();
     }
     this.log("finished execution");
 }
@@ -92,12 +90,16 @@ jsjvm.JavaVM.prototype.readNextOpCode = function() {
     return opCode;
 }
 
-jsjvm.JavaVM.prototype.readNextInt = function() {
-    return this.readNextIntegral(4);
-}
-
 jsjvm.JavaVM.prototype.readNextByte = function() {
     return this.readNextIntegral(1);
+}
+
+jsjvm.JavaVM.prototype.readNextShort = function() {
+    return this.readNextIntegral(2);
+}
+
+jsjvm.JavaVM.prototype.readNextInt = function() {
+    return this.readNextIntegral(4);
 }
 
 jsjvm.JavaVM.prototype.readNextIntegral = function(numberOfBytes) {
@@ -118,11 +120,38 @@ jsjvm.JavaVM.prototype.abort = function(message) {
 }
 
 jsjvm.JavaVM.prototype.log = function(message) {
-    this.outputElement.innerHTML += "> " + message + "</br>";
+    this.print("> " + message);
+    this.print("</br>");
+}
+
+jsjvm.JavaVM.prototype.print = function(message) {
+    this.outputElement.innerHTML += message;
 }
 
 jsjvm.JavaVM.prototype.logCurrentFrame = function() {
-    
+    var frame = this.getCurrentFrame();
+    if (frame) {
+        var operandStack = frame.getOperandStack();
+        this.print("> operand stack: ");
+        this.printArray(operandStack);
+
+        var localVariables = frame.getLocalVariables();
+        this.print("> local variables: ");
+        this.printArray(localVariables);
+    }
+}
+
+jsjvm.JavaVM.prototype.printArray = function(arrayToPrint) {
+    for (var i = 0; i < arrayToPrint.length; i++) {
+        this.print(i + ": ");
+        if (arrayToPrint[i]) {
+            this.print(arrayToPrint[i]);
+        } else {
+            this.print("-");
+        }
+        this.print("; ");
+    }
+    this.print("</br>");
 }
 
 /*****************************************************************************
@@ -138,17 +167,70 @@ jsjvm.JavaVM.prototype.op16 = function() {
 }
 
 /**
+ * sipush
+ */
+jsjvm.JavaVM.prototype.op17 = function() {
+    var shortVal = this.readNextShort();
+    this.getCurrentFrame().getOperandStack().push(shortVal);
+}
+
+/**
+ * iload
+ */
+jsjvm.JavaVM.prototype.op21 = function() {
+    var index = this.readNextByte();
+    this.iload(index);
+}
+
+/**
+ * iload_0
+ */
+jsjvm.JavaVM.prototype.op26 = function() {
+    this.iload(0);
+}
+
+/**
+ * iload_1
+ */
+jsjvm.JavaVM.prototype.op27 = function() {
+    this.iload(1);
+}
+/**
+ * iload_2
+ */
+jsjvm.JavaVM.prototype.op28 = function() {
+    this.iload(2);
+}
+
+/**
+ * iload_3
+ */
+jsjvm.JavaVM.prototype.op29 = function() {
+    this.iload(3);
+}
+
+/**
+ * helper function for the "iload" operations
+ */
+jsjvm.JavaVM.prototype.iload = function(index) {
+    var localVariables = this.getCurrentFrame().getLocalVariables()
+    var value = localVariables[index];
+    this.getCurrentFrame().getOperandStack().push(value);
+}
+
+/**
  * istore
  */
 jsjvm.JavaVM.prototype.op54 = function() {
-    var intValue = this.readNextInt();
+    var index = this.readNextByte();
+    this.istore(index);
 }
 
 /**
  * istore_0
  */
 jsjvm.JavaVM.prototype.op59 = function() {
-
+    this.istore(0);
 }
 
 /**
@@ -179,6 +261,28 @@ jsjvm.JavaVM.prototype.istore = function(index) {
     var frame = this.getCurrentFrame();
     var value = frame.getOperandStack().pop();
     frame.getLocalVariables()[index] = value;
+}
+
+/**
+ * iadd
+ */
+jsjvm.JavaVM.prototype.op96 = function() {
+    var operandStack = this.getCurrentFrame().getOperandStack();
+    var value1 = operandStack.pop();
+    var value2 = operandStack.pop();
+    var sum = value1 + value2;
+    operandStack.push(sum);
+}
+
+/**
+ * isub
+ */
+jsjvm.JavaVM.prototype.op100 = function() {
+    var operandStack = this.getCurrentFrame().getOperandStack();
+    var value2 = operandStack.pop();
+    var value1 = operandStack.pop();
+    var dif = value1 - value2;
+    operandStack.push(dif);
 }
 
 /**

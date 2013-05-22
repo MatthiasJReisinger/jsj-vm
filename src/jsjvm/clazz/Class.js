@@ -6,6 +6,10 @@ jsjvm.clazz.Class = function() {
     this.methods = null;
 }
 
+jsjvm.clazz.Class.prototype.getConstantPool = function() {
+    return this.constant_pool;
+}
+
 jsjvm.clazz.Class.prototype.getMethod = function(methodName) {
     for (var i = 0; i < this.methods.length; i++) {
         var method = this.methods[i];
@@ -15,3 +19,5 @@ jsjvm.clazz.Class.prototype.getMethod = function(methodName) {
     }
     throw "NoSuchMethodException";
 }
+
+
