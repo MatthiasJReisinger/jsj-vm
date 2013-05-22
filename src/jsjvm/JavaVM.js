@@ -144,8 +144,10 @@ jsjvm.JavaVM.prototype.logCurrentFrame = function() {
 jsjvm.JavaVM.prototype.printArray = function(arrayToPrint) {
     for (var i = 0; i < arrayToPrint.length; i++) {
         this.print(i + ": ");
-        if (arrayToPrint[i]) {
+        if (arrayToPrint[i] != undefined) {
             this.print(arrayToPrint[i]);
+        } else if (arrayToPrint[i] === null) {
+            this.print("null");
         } else {
             this.print("-");
         }
@@ -157,6 +159,62 @@ jsjvm.JavaVM.prototype.printArray = function(arrayToPrint) {
 /*****************************************************************************
  * Java Virtual Machine Instructions
  *****************************************************************************/
+
+/**
+ * aconst_null
+ */
+jsjvm.JavaVM.prototype.op1 = function() {
+    this.getCurrentFrame().getOperandStack().push(null);
+}
+
+/**
+ * iconst_m1
+ */
+jsjvm.JavaVM.prototype.op2 = function() {
+    this.getCurrentFrame().getOperandStack().push(-1);
+}
+
+/**
+ * iconst_0
+ */
+jsjvm.JavaVM.prototype.op3 = function() {
+    this.getCurrentFrame().getOperandStack().push(0);
+}
+
+/**
+ * iconst_1
+ */
+jsjvm.JavaVM.prototype.op4 = function() {
+    this.getCurrentFrame().getOperandStack().push(1);
+}
+
+/**
+ * iconst_2
+ */
+jsjvm.JavaVM.prototype.op5 = function() {
+    this.getCurrentFrame().getOperandStack().push(2);
+}
+
+/**
+ * iconst_3
+ */
+jsjvm.JavaVM.prototype.op6 = function() {
+    this.getCurrentFrame().getOperandStack().push(3);
+}
+
+/**
+ * iconst_4
+ */
+jsjvm.JavaVM.prototype.op7 = function() {
+    this.getCurrentFrame().getOperandStack().push(4);
+}
+
+/**
+ * iconst_5
+ */
+jsjvm.JavaVM.prototype.op8 = function() {
+    this.getCurrentFrame().getOperandStack().push(5);
+}
 
 /**
  * bipush
@@ -268,8 +326,8 @@ jsjvm.JavaVM.prototype.istore = function(index) {
  */
 jsjvm.JavaVM.prototype.op96 = function() {
     var operandStack = this.getCurrentFrame().getOperandStack();
-    var value1 = operandStack.pop();
     var value2 = operandStack.pop();
+    var value1 = operandStack.pop();
     var sum = value1 + value2;
     operandStack.push(sum);
 }
@@ -283,6 +341,110 @@ jsjvm.JavaVM.prototype.op100 = function() {
     var value1 = operandStack.pop();
     var dif = value1 - value2;
     operandStack.push(dif);
+}
+
+/**
+ * imul
+ */
+jsjvm.JavaVM.prototype.op104 = function() {
+    var operandStack = this.getCurrentFrame().getOperandStack();
+    var value2 = operandStack.pop();
+    var value1 = operandStack.pop();
+    var mul = value1 * value2;
+    operandStack.push(mul);
+}
+
+/**
+ * idiv
+ */
+jsjvm.JavaVM.prototype.op108 = function() {
+    var operandStack = this.getCurrentFrame().getOperandStack();
+    var value2 = operandStack.pop();
+    var value1 = operandStack.pop();
+    var div = value1 / value2;
+    operandStack.push(div);
+}
+
+/**
+ * ishl
+ */
+jsjvm.JavaVM.prototype.op120 = function() {
+    var operandStack = this.getCurrentFrame().getOperandStack();
+    var value2 = operandStack.pop();
+    var value1 = operandStack.pop();
+    var result = value1 << value2;
+    operandStack.push(result);
+}
+
+/**
+ * ishr
+ */
+jsjvm.JavaVM.prototype.op122 = function() {
+    var operandStack = this.getCurrentFrame().getOperandStack();
+    var value2 = operandStack.pop();
+    var value1 = operandStack.pop();
+    var result = value1 >> value2;
+    operandStack.push(result);
+}
+
+/**
+ * iand
+ */
+jsjvm.JavaVM.prototype.op126 = function() {
+    var operandStack = this.getCurrentFrame().getOperandStack();
+    var value2 = operandStack.pop();
+    var value1 = operandStack.pop();
+    var result = value1 ^ value2;
+    operandStack.push(result);
+}
+
+/**
+ * iinc
+ */
+jsjvm.JavaVM.prototype.op132 = function() {
+    var index = this.readNextByte();
+    var constant = this.readNextByte();
+    this.getCurrentFrame().getLocalVariables()[index] += constant;
+}
+
+/**
+ * if_icmpeq
+ */
+jsjvm.JavaVM.prototype.op159 = function() {
+    this.if_cmp(function(value1, value2) {
+        return value1 == value2;
+    });
+}
+
+/**
+ * if_icmpne
+ */
+jsjvm.JavaVM.prototype.op160 = function() {
+    this.if_cmp(function(value1, value2) {
+        return value1 != value2;
+    });
+}
+
+/**
+ * if_icmple
+ */
+jsjvm.JavaVM.prototype.op164 = function() {
+    this.if_cmp(function(value1, value2) {
+        return value1 <= value2;
+    });
+}
+
+/**
+ * helper for the ic_cmp* operations
+ */
+jsjvm.JavaVM.prototype.if_cmp = function(compareFunction) {
+    var branchOffset = this.readNextIntegral(2);
+    var operandStack = this.getCurrentFrame().getOperandStack();
+    var value2 = operandStack.pop();
+    var value1 = operandStack.pop();
+    if (compareFunction(value1, value2)) {
+        this.getCurrentFrame().increasePc(branchOffset);
+    }
 }
 
 /**
