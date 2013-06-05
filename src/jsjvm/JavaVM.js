@@ -90,24 +90,41 @@ jsjvm.JavaVM.prototype.readNextOpCode = function() {
     return opCode;
 }
 
-jsjvm.JavaVM.prototype.readNextByte = function() {
-    return this.readNextIntegral(1);
+jsjvm.JavaVM.prototype.readUnsignedByte = function() {
+    return this.readUnsignedIntegral(1);
 }
 
-jsjvm.JavaVM.prototype.readNextShort = function() {
-    return this.readNextIntegral(2);
+jsjvm.JavaVM.prototype.readSignedByte = function() {
+    return this.readSignedIntegral(1);
 }
 
-jsjvm.JavaVM.prototype.readNextInt = function() {
-    return this.readNextIntegral(4);
+jsjvm.JavaVM.prototype.readUnsignedShort = function() {
+    return this.readUnsignedIntegral(2);
 }
 
-jsjvm.JavaVM.prototype.readNextIntegral = function(numberOfBytes) {
+jsjvm.JavaVM.prototype.readSignedShort = function() {
+    return this.readSignedIntegral(2);
+}
+
+jsjvm.JavaVM.prototype.readUnsignedInt = function() {
+    return this.readUnsignedIntegral(4);
+}
+
+jsjvm.JavaVM.prototype.readUnsignedIntegral = function(numberOfBytes) {
     var frame = this.getCurrentFrame();
     var bytes = frame.getMethod().getCode();
     var value = jsjvm.getIntFromBytes(bytes, frame.getPc(), numberOfBytes);
     this.getCurrentFrame().increasePc(numberOfBytes);
     return value;
+}
+
+/**
+ * Reads the next numberOfBytes bytes. It sign extends the parsed value
+ * using two's complement.
+ */
+jsjvm.JavaVM.prototype.readSignedIntegral = function(numberOfBytes) {
+    var uIntegral = this.readUnsignedIntegral(numberOfBytes);
+    return uIntegral - 2 * ((1<<(numberOfBytes * 8) - 1) & uIntegral);
 }
 
 /*****************************************************************************
@@ -220,7 +237,7 @@ jsjvm.JavaVM.prototype.op8 = function() {
  * bipush
  */
 jsjvm.JavaVM.prototype.op16 = function() {
-    var byteVal = this.readNextIntegral(1);
+    var byteVal = this.readSignedByte();
     this.getCurrentFrame().getOperandStack().push(byteVal);
 }
 
@@ -228,7 +245,7 @@ jsjvm.JavaVM.prototype.op16 = function() {
  * sipush
  */
 jsjvm.JavaVM.prototype.op17 = function() {
-    var shortVal = this.readNextShort();
+    var shortVal = this.readSignedShort();
     this.getCurrentFrame().getOperandStack().push(shortVal);
 }
 
@@ -236,7 +253,7 @@ jsjvm.JavaVM.prototype.op17 = function() {
  * iload
  */
 jsjvm.JavaVM.prototype.op21 = function() {
-    var index = this.readNextByte();
+    var index = this.readUnsignedByte();
     this.iload(index);
 }
 
@@ -280,7 +297,7 @@ jsjvm.JavaVM.prototype.iload = function(index) {
  * istore
  */
 jsjvm.JavaVM.prototype.op54 = function() {
-    var index = this.readNextByte();
+    var index = this.readUnsignedByte();
     this.istore(index);
 }
 
@@ -394,7 +411,7 @@ jsjvm.JavaVM.prototype.op126 = function() {
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
     var value1 = operandStack.pop();
-    var result = value1 ^ value2;
+    var result = value1 & value2;
     operandStack.push(result);
 }
 
@@ -402,8 +419,8 @@ jsjvm.JavaVM.prototype.op126 = function() {
  * iinc
  */
 jsjvm.JavaVM.prototype.op132 = function() {
-    var index = this.readNextByte();
-    var constant = this.readNextByte();
+    var index = this.readUnsignedByte();
+    var constant = this.readSignedByte();
     this.getCurrentFrame().getLocalVariables()[index] += constant;
 }
 
@@ -438,7 +455,7 @@ jsjvm.JavaVM.prototype.op164 = function() {
  * helper for the ic_cmp* operations
  */
 jsjvm.JavaVM.prototype.if_cmp = function(compareFunction) {
-    var branchOffset = this.readNextIntegral(2);
+    var branchOffset = this.readUnsignedIntegral(2);
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
     var value1 = operandStack.pop();

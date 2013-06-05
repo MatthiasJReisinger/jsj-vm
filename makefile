@@ -3,10 +3,13 @@ TARGET=jsjvm.js
 
 all:
 	mkdir -p $(TARGET_DIR)
-	cat src/*.config > $(TARGET_DIR)/$(TARGET)
-	find src -name "*.js" | xargs cat >> $(TARGET_DIR)/$(TARGET)
+	cat src/namespaces.js > $(TARGET_DIR)/$(TARGET)
+	find src/jsjvm src/util -name "*.js" | xargs cat >> $(TARGET_DIR)/$(TARGET)
+
+test:
+	javac test/Test.java
 
 clean:
 	rm -rf $(TARGET_DIR)
 
-.PHONY: all clean
+.PHONY: all test clean
