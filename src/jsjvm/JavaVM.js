@@ -443,6 +443,15 @@ jsjvm.JavaVM.prototype.op160 = function() {
 }
 
 /**
+ * if_icmpge
+ */
+jsjvm.JavaVM.prototype.op162 = function() {
+    this.if_cmp(function(value1, value2) {
+        return value1 >= value2;
+    });
+}
+
+/**
  * if_icmple
  */
 jsjvm.JavaVM.prototype.op164 = function() {
@@ -455,7 +464,7 @@ jsjvm.JavaVM.prototype.op164 = function() {
  * helper for the ic_cmp* operations
  */
 jsjvm.JavaVM.prototype.if_cmp = function(compareFunction) {
-    var branchOffset = this.readUnsignedIntegral(2);
+    var branchOffset = this.readUnsignedIntegral(2) - 3;
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
     var value1 = operandStack.pop();
