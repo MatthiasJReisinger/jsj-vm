@@ -62,10 +62,10 @@ jsjvm.JavaVM.prototype.execute = function() {
         var opCode = this.readNextOpCode();
         var instruction = this["op" + opCode];
         if (instruction != null) {
-            this.log("Execute instruction: " + opCode);
+            //this.log("Execute instruction: " + opCode);
             instruction.call(this);
-            this.logCurrentFrame();
-            this.log("");
+            //this.logCurrentFrame();
+            //this.log("");
         } else {
             this.abort("unknown opcode: " + opCode);
         }
@@ -479,10 +479,40 @@ jsjvm.JavaVM.prototype.if_cmp = function(compareFunction) {
 }
 
 /**
+ * ireturn
+ */
+jsjvm.JavaVM.prototype.op172 = function() {
+    var returnValue = this.getCurrentFrame().getOperandStack().pop();
+    this.stack.pop();
+    this.getCurrentFrame().getOperandStack().push(returnValue);
+}
+
+/**
  * return
  */
 jsjvm.JavaVM.prototype.op177 = function() {
     this.stack.pop();
+}
+
+/**
+ * getstatic
+ */
+jsjvm.JavaVM.prototype.op178 = function() {
+    /* Skip the following two bytes. */
+    this.getCurrentFrame().increasePc(2);
+
+    /* Do nothing. This method is only needed to support
+       then System.out.println() method. See the Readme.md
+       for more information on that. */
+}
+
+/**
+ * invokevirtual
+ */
+jsjvm.JavaVM.prototype.op182 = function() {
+    /* Skip the following two bytes. */
+    this.getCurrentFrame().increasePc(2);
+    this.log("System.out.println(): " + this.getCurrentFrame().getOperandStack().pop());
 }
 
 /**
@@ -491,13 +521,40 @@ jsjvm.JavaVM.prototype.op177 = function() {
 jsjvm.JavaVM.prototype.op184 = function() {
     var constantPoolIndex = this.readUnsignedShort();
     var constantPool = this.getCurrentFrame().getConstantPool();
+    
     var methodRef = constantPool.getEntry(constantPoolIndex);
     var nameAndTypeInfo = constantPool.getEntry(methodRef.name_and_type_index);
+
+    /* get the method to invoke */
     var methodName = constantPool.getString(nameAndTypeInfo.name_index);
     var method = this.getCurrentFrame().getClazz().getMethod(methodName);
 
-    console.log(method);
-
+    /* the new frame that will be pushed onto the stack */
     var frame = new jsjvm.Frame(method, this.getCurrentFrame().getClazz());
+
+    /* get the number of arguments for the method to invoke */
+    var operandStack = this.getCurrentFrame().getOperandStack();
+    var descriptor = constantPool.getString(nameAndTypeInfo.descriptor_index);
+    var argsCount = 0;
+    for (var i = 1; descriptor.charAt(i) != ")"; i++) {
+        var currentChar = descriptor.charAt(i);
+        switch (currentChar) {
+            case "I":
+                argsCount++;
+                break;
+            default:
+                this.abort("unknown type: " + currentChar);
+                break;
+        }
+    }
+
+    /* read the arguments from the operand stack */
+    for (var i = argsCount - 1; i >= 0; i--) {
+        var local = operandStack.pop();
+        frame.getLocalVariables()[i] = local;
+    }
+
+    /* now the frame for the method to invoke is ready to be pushed
+       onto the stack */
     this.stack.push(frame);
 }
