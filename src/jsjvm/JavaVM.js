@@ -38,11 +38,8 @@ jsjvm.finishedReading = function(evt) {
 }
 
 jsjvm.JavaVM.prototype.start = function() {
-    var mainClass = this.classLoader.loadClass(this.mainClassName);
-
-    console.log(mainClass);
-
     /* prepare execution of the main method */
+    var mainClass = this.classLoader.loadClass(this.mainClassName);
     var mainMethod = mainClass.getMethod("main");
     var frame = new jsjvm.Frame(mainMethod, mainClass);
     this.stack.push(frame);
@@ -498,8 +495,9 @@ jsjvm.JavaVM.prototype.op184 = function() {
     var nameAndTypeInfo = constantPool.getEntry(methodRef.name_and_type_index);
     var methodName = constantPool.getString(nameAndTypeInfo.name_index);
     var method = this.getCurrentFrame().getClazz().getMethod(methodName);
+
     console.log(method);
+
     var frame = new jsjvm.Frame(method, this.getCurrentFrame().getClazz());
     this.stack.push(frame);
-   
 }
