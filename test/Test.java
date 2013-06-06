@@ -108,7 +108,9 @@ public class Test {
         // 90: iinc 3 3;
         }
 
-        // 93: return;
+        a = add(2, 3);
+
+        // return;
     }
 
     public static int add(int a, int b) {

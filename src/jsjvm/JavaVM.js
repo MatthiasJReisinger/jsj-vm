@@ -39,8 +39,12 @@ jsjvm.finishedReading = function(evt) {
 
 jsjvm.JavaVM.prototype.start = function() {
     var mainClass = this.classLoader.loadClass(this.mainClassName);
+
+    console.log(mainClass);
+
+    /* prepare execution of the main method */
     var mainMethod = mainClass.getMethod("main");
-    var frame = new jsjvm.Frame(mainMethod, mainClass.getConstantPool());
+    var frame = new jsjvm.Frame(mainMethod, mainClass);
     this.stack.push(frame);
 
     console.log(frame.getMethod().getCode());
@@ -125,6 +129,10 @@ jsjvm.JavaVM.prototype.readUnsignedIntegral = function(numberOfBytes) {
 jsjvm.JavaVM.prototype.readSignedIntegral = function(numberOfBytes) {
     var uIntegral = this.readUnsignedIntegral(numberOfBytes);
     return uIntegral - 2 * ((1<<(numberOfBytes * 8) - 1) & uIntegral);
+}
+
+jsjvm.JavaVM.prototype.getCurrentClass = function() {
+    
 }
 
 /*****************************************************************************
@@ -480,4 +488,18 @@ jsjvm.JavaVM.prototype.op177 = function() {
     this.stack.pop();
 }
 
-
+/**
+ * invokestatic
+ */
+jsjvm.JavaVM.prototype.op184 = function() {
+    var constantPoolIndex = this.readUnsignedShort();
+    var constantPool = this.getCurrentFrame().getConstantPool();
+    var methodRef = constantPool.getEntry(constantPoolIndex);
+    var nameAndTypeInfo = constantPool.getEntry(methodRef.name_and_type_index);
+    var methodName = constantPool.getString(nameAndTypeInfo.name_index);
+    var method = this.getCurrentFrame().getClazz().getMethod(methodName);
+    console.log(method);
+    var frame = new jsjvm.Frame(method, this.getCurrentFrame().getClazz());
+    this.stack.push(frame);
+   
+}

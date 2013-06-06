@@ -1,3 +1,6 @@
+/**
+ * Represents the runtime constant pool of a java class.
+ */
 jsjvm.clazz.ConstantPool = function(entries) {
     this.entries = entries;
 }
@@ -22,6 +25,13 @@ jsjvm.clazz.ConstantPoolType = {
 /******************************************************************************
  * PUBLIC METHODS
  *****************************************************************************/
+
+/**
+ * Returns the runtime constant pool entry at the given index.
+ */
+jsjvm.clazz.ConstantPool.prototype.getEntry = function(index) {
+    return this.entries[index];
+}
 
 jsjvm.clazz.ConstantPool.prototype.getClassName = function(index) {
     var entry = this.entries[index];

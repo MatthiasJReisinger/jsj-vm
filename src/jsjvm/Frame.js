@@ -1,9 +1,12 @@
-jsjvm.Frame = function(methodInfo, constantPool) {
+/**
+ * This class represents a frame on the stack of the virtual machine.
+ */
+jsjvm.Frame = function(method, clazz) {
     this.pc = 0;
-    this.localVariables = new Array(methodInfo.getNumberOfLocalVariables());
+    this.localVariables = new Array(method.getNumberOfLocalVariables());
     this.operandStack = new Array();
-    this.method = methodInfo;
-    this.constantPool = constantPool;
+    this.method = method;
+    this.clazz = clazz;
 }
 
 jsjvm.Frame.prototype.getPc = function() {
@@ -28,4 +31,12 @@ jsjvm.Frame.prototype.getOperandStack = function() {
 
 jsjvm.Frame.prototype.getMethod = function() {
     return this.method;
+}
+
+jsjvm.Frame.prototype.getClazz = function() {
+    return this.clazz;
+}
+
+jsjvm.Frame.prototype.getConstantPool = function() {
+    return this.clazz.getConstantPool();
 }
