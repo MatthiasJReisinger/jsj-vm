@@ -12,6 +12,7 @@ jsjvm.JavaVM = function(className, files, outputElement) {
     this.stack = new Array();
     this.classLoader = null;
     this.outputElement = outputElement;
+    this.debug = false;
 
     this.loadFiles(files);
 }
@@ -38,6 +39,9 @@ jsjvm.finishedReading = function(evt) {
 }
 
 jsjvm.JavaVM.prototype.start = function() {
+    /* for performance measuring */
+    var startTime = new Date();
+
     /* prepare execution of the main method */
     var mainClass = this.classLoader.loadClass(this.mainClassName);
     var mainMethod = mainClass.getMethod("main");
@@ -49,8 +53,13 @@ jsjvm.JavaVM.prototype.start = function() {
     /* start interpreter */
     this.execute();
 
+    /* statistical output */
+    var endTime = new Date();
+    var executionTime = (endTime.getTime() - startTime.getTime()) / 1000;
+    this.println("total execution time: " + executionTime + " seconds");
+
     /* shutdown */
-    this.log("shutdown");
+    this.println("shutdown");
 }
 
 /*****************************************************************************
@@ -62,15 +71,16 @@ jsjvm.JavaVM.prototype.execute = function() {
         var opCode = this.readNextOpCode();
         var instruction = this["op" + opCode];
         if (instruction != null) {
-            //this.log("Execute instruction: " + opCode);
             instruction.call(this);
-            //this.logCurrentFrame();
-            //this.log("");
+            this.log("");
+            this.log("Executed instruction: " + opCode);
+            this.logCurrentFrame();
+            this.log("");
         } else {
             this.abort("unknown opcode: " + opCode);
         }
     }
-    this.log("finished execution");
+    this.println("finished execution");
 }
 
 jsjvm.JavaVM.prototype.isStackEmpty = function() {
@@ -137,11 +147,17 @@ jsjvm.JavaVM.prototype.getCurrentClass = function() {
  *****************************************************************************/
 
 jsjvm.JavaVM.prototype.abort = function(message) {
-    this.log("[ERROR] " + message);
+    this.println("[ERROR] " + message);
     throw "JavaVM Error";
 }
 
 jsjvm.JavaVM.prototype.log = function(message) {
+    if (this.debug) {
+        this.println(message);
+    }
+}
+
+jsjvm.JavaVM.prototype.println = function(message) {
     this.print("> " + message);
     this.print("</br>");
 }
@@ -151,15 +167,17 @@ jsjvm.JavaVM.prototype.print = function(message) {
 }
 
 jsjvm.JavaVM.prototype.logCurrentFrame = function() {
-    var frame = this.getCurrentFrame();
-    if (frame) {
-        var operandStack = frame.getOperandStack();
-        this.print("> operand stack: ");
-        this.printArray(operandStack);
-
-        var localVariables = frame.getLocalVariables();
-        this.print("> local variables: ");
-        this.printArray(localVariables);
+    if (this.debug) {
+        var frame = this.getCurrentFrame();
+        if (frame) {
+            var operandStack = frame.getOperandStack();
+            this.print("> operand stack: ");
+            this.printArray(operandStack);
+    
+            var localVariables = frame.getLocalVariables();
+            this.print("> local variables: ");
+            this.printArray(localVariables);
+        }
     }
 }
 
@@ -512,7 +530,7 @@ jsjvm.JavaVM.prototype.op178 = function() {
 jsjvm.JavaVM.prototype.op182 = function() {
     /* Skip the following two bytes. */
     this.getCurrentFrame().increasePc(2);
-    this.log("System.out.println(): " + this.getCurrentFrame().getOperandStack().pop());
+    this.println("System.out.println(): " + this.getCurrentFrame().getOperandStack().pop());
 }
 
 /**

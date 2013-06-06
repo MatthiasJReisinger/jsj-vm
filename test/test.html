@@ -6,20 +6,33 @@
         <link rel="stylesheet" type="text/css" href="test.css">
         <script src="../target/jsjvm.js"></script>
         <script>
+            var files = null;
+
             window.onload = function () {
-                document.getElementById('files').addEventListener('change', start, false);
+                document.getElementById('files').addEventListener('change', uploadedFile, false);
             }
 
-            function start(evt) {
-                new jsjvm.JavaVM('Test', 
-                                 evt.target.files,
-                                 document.getElementById("screenContent"));
+            function uploadedFile(evt) {
+                files = evt.target.files;
+            }
+
+            function startVM() {
+                if (files != null) {
+                    new jsjvm.JavaVM('Test', files,
+                                     document.getElementById("screenContent"));
+                }
+            }
+
+            function clearConsole() {
+                document.getElementById("screenContent").innerHTML = "";
             }
         </script>
     </head>
     <body> 
         <div id="container">
-            <input type="file" id="files" name="files[]" multiple/>
+            <input type="file" id="files" name="files[]" multiple/><br/>
+            <input type="button" onclick="startVM();" value="Execute"/>
+            <input type="button" onclick="clearConsole();" value="Clear"/>
             <div id="screen">
                 <div id="header">Jsj VM</div>
                 <div id="subheader">
@@ -27,8 +40,10 @@
                     *&nbsp;&nbsp;Version 0.1&nbsp;&nbsp;*</br>
                     *****************
                 </div>
+                <div>
+                    &#62; ready to rumble...
+                </div>
                 <div id="screenContent">
-                    &#62; ready to rumble...</br>
                 </div>
                 <div id="cursor">
                     &#62;

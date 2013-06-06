@@ -12,8 +12,6 @@ public class Test {
         // 0: bipush -3;
         // 2: istore_1;
 
-        System.out.println(a);
-
         int b = 4;
         // 3: iconst_4;
         // 4: istore_2;
@@ -111,7 +109,6 @@ public class Test {
         }
 
         a = add(2, 3);
-        System.out.println(a);
 
         // return;
     }
