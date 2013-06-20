@@ -9,6 +9,9 @@ all:
 test:
 	javac test/Test.java
 
+lines:
+	find . -name '*.js' | xargs wc -l
+
 clean:
 	rm -rf $(TARGET_DIR)
 

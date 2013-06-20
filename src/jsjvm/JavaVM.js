@@ -17,9 +17,9 @@ jsjvm.JavaVM = function(className, files, outputElement) {
     this.loadFiles(files);
 }
 
-/*****************************************************************************
- * Startup methods
- *****************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Startup methods
+////////////////////////////////////////////////////////////////////////////////
 
 jsjvm.JavaVM.prototype.loadFiles = function(files) {
     var reader = new FileReader();
@@ -57,14 +57,11 @@ jsjvm.JavaVM.prototype.start = function() {
     var endTime = new Date();
     var executionTime = (endTime.getTime() - startTime.getTime()) / 1000;
     this.println("total execution time: " + executionTime + " seconds");
-
-    /* shutdown */
-    this.println("shutdown");
 }
 
-/*****************************************************************************
- * Interpreter methods
- *****************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Interpreter methods
+////////////////////////////////////////////////////////////////////////////////
 
 jsjvm.JavaVM.prototype.execute = function() {
     while (!this.isStackEmpty()) {
@@ -142,9 +139,9 @@ jsjvm.JavaVM.prototype.getCurrentClass = function() {
     
 }
 
-/*****************************************************************************
- * Logging
- *****************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Logging
+////////////////////////////////////////////////////////////////////////////////
 
 jsjvm.JavaVM.prototype.abort = function(message) {
     this.println("[ERROR] " + message);
@@ -196,9 +193,9 @@ jsjvm.JavaVM.prototype.printArray = function(arrayToPrint) {
     this.print("</br>");
 }
 
-/*****************************************************************************
- * Java Virtual Machine Instructions
- *****************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Java Virtual Machine Instructions
+////////////////////////////////////////////////////////////////////////////////
 
 /**
  * aconst_null
@@ -448,6 +445,17 @@ jsjvm.JavaVM.prototype.op132 = function() {
 }
 
 /**
+ * ifge
+ */
+jsjvm.JavaVM.prototype.op156 = function() {
+    var branchOffset = this.readBranchOffset();
+    var value = this.getCurrentFrame().getOperandStack().pop();
+    if (value >= 0) {
+        this.getCurrentFrame().increasePc(branchOffset);
+    }
+}
+
+/**
  * if_icmpeq
  */
 jsjvm.JavaVM.prototype.op159 = function() {
@@ -484,16 +492,31 @@ jsjvm.JavaVM.prototype.op164 = function() {
 }
 
 /**
- * helper for the ic_cmp* operations
+ * helper for the if_icmp* operations
  */
 jsjvm.JavaVM.prototype.if_cmp = function(compareFunction) {
-    var branchOffset = this.readUnsignedIntegral(2) - 3;
+    var branchOffset = this.readBranchOffset();
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
     var value1 = operandStack.pop();
     if (compareFunction(value1, value2)) {
         this.getCurrentFrame().increasePc(branchOffset);
     }
+}
+
+/**
+ * goto
+ */
+jsjvm.JavaVM.prototype.op167 = function() {
+    var branchOffset = this.readBranchOffset();
+    this.getCurrentFrame().increasePc(branchOffset);
+}
+
+/**
+ * helper function for the control transfer instructions
+ */
+jsjvm.JavaVM.prototype.readBranchOffset = function() {
+    return this.readSignedIntegral(2) - 3;
 }
 
 /**
