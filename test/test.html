@@ -19,7 +19,8 @@
             function startVM() {
                 if (files != null) {
                     new jsjvm.JavaVM('Test', files,
-                                     document.getElementById("screenContent"));
+                                     document.getElementById("screenContent"),
+                                     document.getElementById("debug").checked);
                 }
             }
 
@@ -30,9 +31,17 @@
     </head>
     <body> 
         <div id="container">
-            <input type="file" id="files" name="files[]" multiple/><br/>
-            <input type="button" onclick="startVM();" value="Execute"/>
-            <input type="button" onclick="clearConsole();" value="Clear"/>
+            <div>
+                <input type="file" id="files" name="files[]" multiple/><br/>
+            </div>
+            <div>
+                <input type="button" onclick="startVM();" value="Execute"/>
+                <input type="button" onclick="clearConsole();" value="Clear"/>
+            </div>
+            <div>
+                <label>Debug Modus:</label>
+                <input type="checkbox" id="debug"/>
+            </div>
             <div id="screen">
                 <div id="header">Jsj VM</div>
                 <div id="subheader">

@@ -2,17 +2,19 @@
  * The constructor creates the Java VM and immediately begins with the
  * execution of the main method of the class given by the param "className".
  *
- * @param string className the name of the class containing the main method
+ * @param String className the name of the class containing the main method
  * @param FileList files the .class files needed for execution
- * @param outputElement the html element that is used to print the output
+ * @param Object outputElement the html element that is used to print the output
  * of the java vm
+ * @param boolean debug defines, if the Java VM should be started with debug
+ * mode turned on or off
  */
-jsjvm.JavaVM = function(className, files, outputElement) {
+jsjvm.JavaVM = function(className, files, outputElement, debug) {
     this.mainClassName = className;
     this.stack = new Array();
     this.classLoader = null;
     this.outputElement = outputElement;
-    this.debug = false;
+    this.debug = debug;
 
     this.loadFiles(files);
 }
