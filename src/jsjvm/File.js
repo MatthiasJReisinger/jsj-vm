@@ -1,3 +1,7 @@
+/**
+ * This class represents a file that has been passed
+ * to the Java VM.
+ */
 jsjvm.File = function(fileName) {
     this.fileName = fileName;
     this.bytes = null;

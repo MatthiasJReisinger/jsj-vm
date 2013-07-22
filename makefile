@@ -12,7 +12,4 @@ test:
 lines:
 	find . -name '*.js' | xargs wc -l
 
-clean:
-	rm -rf $(TARGET_DIR)
-
-.PHONY: all test clean
+.PHONY: all test lines

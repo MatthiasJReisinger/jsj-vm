@@ -1,3 +1,7 @@
+/**
+ * This clazz encapsulates all the information of a
+ * Java method.
+ */
 jsjvm.clazz.MethodInfo = function() {
     this.access_flags;
     this.name;

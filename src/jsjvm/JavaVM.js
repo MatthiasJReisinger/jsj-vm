@@ -290,6 +290,7 @@ jsjvm.JavaVM.prototype.op26 = function() {
 jsjvm.JavaVM.prototype.op27 = function() {
     this.iload(1);
 }
+
 /**
  * iload_2
  */
