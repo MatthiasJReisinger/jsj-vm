@@ -1,12 +1,14 @@
+/**
+ *
+ */
 jsjvm.classloader.AbstractParser = function(classFile, offset) {
     this.classFile = classFile;
     this.offset = offset;
 }
 
-/*****************************************************************************
- * PUBLIC METHODS
- *****************************************************************************/
-
+/**
+ * This is an abstract method, thus it is not implemented.
+ */
 jsjvm.classloader.AbstractParser.prototype.parse = function() {}
 
 jsjvm.classloader.AbstractParser.prototype.getOffset = function() {

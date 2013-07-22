@@ -1,5 +1,5 @@
 /**
- * The bootstrap class loader of the JavaVM.
+ * The bootstrap class loader of the Java VM.
  *
  * @param Array classFiles the class files to be used when loading
  * a class
@@ -32,23 +32,3 @@ jsjvm.classloader.ClassLoader.prototype.getClassFile = function(className) {
     throw "ClassNotFoundException";
 }
 
-/**
- * Creates a class from the given parsed class file
- *
- * @param jsjvm.classfile.ParsedClassFile parsedClassFile
- * @return jsjvm.Class
- */
-jsjvm.classloader.ClassLoader.prototype.setupClass = function(parsedClassFile) {
-    var loadedClass = new jsjvm.clazz.Class();
-
-    loadedClass.setPublicFlag((parsedClassFile.access_flags & 0x0001) != 0);
-    loadedClass.setFinalFlag((parsedClassFile.access_flags & 0x0010) != 0);
-    loadedClass.setSuperFlag((parsedClassFile.access_flags & 0x0020) != 0);
-    loadedClass.setInterfaceFlag((parsedClassFile.access_flags & 0x0200) != 0);
-    loadedClass.setAbstractFlag((parsedClassFile.access_flags & 0x0400) != 0);
-    loadedClass.setSyntheticFlag((parsedClassFile.access_flags & 0x1000) != 0);
-    loadedClass.setAnnotationFlag((parsedClassFile.access_flags & 0x2000) != 0);
-    loadedClass.setEnumFlag((parsedClassFile.access_flags & 0x4000) != 0);
-
-    return loadedClass;
-}

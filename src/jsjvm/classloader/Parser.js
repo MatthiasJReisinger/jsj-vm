@@ -1,3 +1,6 @@
+/**
+ * @param classFile the class file to be parsed
+ */
 jsjvm.classloader.Parser = function(classFile) {
     /* call super constructor */
     jsjvm.classloader.AbstractParser.call(this, classFile, 0);
@@ -5,13 +8,12 @@ jsjvm.classloader.Parser = function(classFile) {
 
 inherit(jsjvm.classloader.Parser, jsjvm.classloader.AbstractParser);
 
-/*****************************************************************************
- * PUBLIC METHODS
- *****************************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// PUBLIC METHODS
+///////////////////////////////////////////////////////////////////////////////
 
 /**
- * @param ClassFile the class file to be parsed
- * @return ParsedClassFile the parsed representation of the given class file.
+ * @return jsjvm.clazz.Class the parsed representation of the given class file.
  */
 jsjvm.classloader.Parser.prototype.parse = function() {
     var parsedClass = new jsjvm.clazz.Class();
@@ -31,9 +33,9 @@ jsjvm.classloader.Parser.prototype.parse = function() {
     return parsedClass;
 }
 
-/*****************************************************************************
- * NON-PUBLIC HELPER METHODS
- *****************************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// NON-PUBLIC HELPER METHODS
+///////////////////////////////////////////////////////////////////////////////
 
 jsjvm.classloader.Parser.prototype.parseConstantPool = function() {
     var constantPoolCount = this.parseInt(2);
