@@ -1,3 +1,9 @@
+/**
+ * This parser is used by the main parser (see jsjvm.classloader.Parser) to
+ * parse the CodeAttribute part of the given class file. It starts parsing
+ * at the given offset. Thus the offset has to mark a valid position within
+ * the class file, where indeed an code attribute structure begins.
+ */
 jsjvm.classloader.CodeAttributeParser = function(classFile, offset) {
     /* call super constructor */
     jsjvm.classloader.AbstractParser.call(this, classFile, offset);

@@ -137,10 +137,6 @@ jsjvm.JavaVM.prototype.readSignedIntegral = function(numberOfBytes) {
     return uIntegral - 2 * ((1<<(numberOfBytes * 8) - 1) & uIntegral);
 }
 
-jsjvm.JavaVM.prototype.getCurrentClass = function() {
-    
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // Logging
 ////////////////////////////////////////////////////////////////////////////////
@@ -157,8 +153,9 @@ jsjvm.JavaVM.prototype.log = function(message) {
 }
 
 jsjvm.JavaVM.prototype.println = function(message) {
-    this.print("> " + message);
-    this.print("</br>");
+    var line = document.createElement("div");
+    line.innerHTML = "> " + message;
+    this.outputElement.appendChild(line);
 }
 
 jsjvm.JavaVM.prototype.print = function(message) {
@@ -170,29 +167,30 @@ jsjvm.JavaVM.prototype.logCurrentFrame = function() {
         var frame = this.getCurrentFrame();
         if (frame) {
             var operandStack = frame.getOperandStack();
-            this.print("> operand stack: ");
-            this.printArray(operandStack);
+            var operandStackString = this.arrayToString(operandStack);
+            this.println("operand stack: " + operandStackString);
     
             var localVariables = frame.getLocalVariables();
-            this.print("> local variables: ");
-            this.printArray(localVariables);
+            var localVarString = this.arrayToString(localVariables);
+            this.println("local variables: " + localVarString);
         }
     }
 }
 
-jsjvm.JavaVM.prototype.printArray = function(arrayToPrint) {
+jsjvm.JavaVM.prototype.arrayToString = function(arrayToPrint) {
+    var arrayString = "";
     for (var i = 0; i < arrayToPrint.length; i++) {
-        this.print(i + ": ");
+        arrayString += i + ": ";
         if (arrayToPrint[i] != undefined) {
-            this.print(arrayToPrint[i]);
+            arrayString += "" + arrayToPrint[i];
         } else if (arrayToPrint[i] === null) {
-            this.print("null");
+            arrayString += "null";
         } else {
-            this.print("-");
+            arrayString += "-";
         }
-        this.print("; ");
+        arrayString += "; ";
     }
-    this.print("</br>");
+    return arrayString;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -546,8 +544,7 @@ jsjvm.JavaVM.prototype.op178 = function() {
     this.getCurrentFrame().increasePc(2);
 
     /* Do nothing. This method is only needed to support
-       then System.out.println() method. See the Readme.md
-       for more information on that. */
+       then System.out.println() method. */
 }
 
 /**

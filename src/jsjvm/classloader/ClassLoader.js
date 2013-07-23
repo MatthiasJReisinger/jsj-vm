@@ -1,5 +1,5 @@
 /**
- * The bootstrap class loader of the Java VM.
+ * This is the class loader of the Java VM.
  *
  * @param Array classFiles the class files to be used when loading
  * a class

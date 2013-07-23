@@ -1,3 +1,8 @@
+/**
+ * Represents a code attribute within the class file. It holds
+ * information like the actual bytecode of the corresponding
+ * method, code length, etc.
+ */
 jsjvm.clazz.CodeAttribute = function() {
     /* call super constructor */
     jsjvm.clazz.AttributeInfo.call(this);

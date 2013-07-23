@@ -1,4 +1,7 @@
 /**
+ * This class holds the main logic for parsing
+ * a class file.
+ *
  * @param classFile the class file to be parsed
  */
 jsjvm.classloader.Parser = function(classFile) {
@@ -83,8 +86,10 @@ jsjvm.classloader.Parser.prototype.parseConstantPool = function() {
                 break;
             case 9:
                 /* CONSTANT_Fieldref */
+                /* fall through to case 11 */
             case 10:
                 /* CONSTANT_Methodref */
+                /* fall through to case 11 */
             case 11:
                 /* CONSTANT_InterfaceMethodref */
                 info_struct.class_index = this.parseInt(2);

@@ -1,5 +1,7 @@
 /**
- * Represents a java class
+ * This is the runtime representation of a Java class. It
+ * holds its runtime constant pool and provides access to
+ * the methods, which are implemented by this class.
  */
 jsjvm.clazz.Class = function() {
     this.className = null;
