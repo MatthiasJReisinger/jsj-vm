@@ -11,38 +11,54 @@
  */
 public class Test {
     public static void main(String[] args) {
-        int a = -3; 
+        int a = -3;
+        System.out.println(a);
         int b = 4;
+        System.out.println(b);
         int c = 500;
+        System.out.println(c);
         int d = -500;
+        System.out.println(d);
         a = b + c;
+        System.out.println(a);
         b = c - d;
+        System.out.println(b);
         d = d * 2;
+        System.out.println(d);
         c = b / 4;
+        System.out.println(c);
         a = a << 5;
+        System.out.println(a);
         a = a >> 5;
+        System.out.println(a);
         c = c & 128;
+        System.out.println(c);
         c++;
+        System.out.println(c);
         c--;
+        System.out.println(c);
         
         if (c != 128) {
             c += 3;
         }
+        System.out.println(c);
 
         if (c == 128) {
             c += 3;
         }
+        System.out.println(c);
 
         if (c < 128) {
             c += 3;
         }
+        System.out.println(c);
 
         if (c > 128) {
             c += 3;
         }
+        System.out.println(c);
 
         a = add(2, 3);
-
         System.out.println(a);
 
         int i = 0;
