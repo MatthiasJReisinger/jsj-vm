@@ -66,7 +66,7 @@ jsjvm.JavaVM.prototype.start = function() {
 ////////////////////////////////////////////////////////////////////////////////
 
 jsjvm.JavaVM.prototype.execute = function() {
-    while (!this.isStackEmpty()) {
+    while (this.stack.length > 0) {
         var opCode = this.readNextOpCode();
         var instruction = this["op" + opCode];
         if (instruction != null) {
@@ -80,10 +80,6 @@ jsjvm.JavaVM.prototype.execute = function() {
         }
     }
     this.println("finished execution");
-}
-
-jsjvm.JavaVM.prototype.isStackEmpty = function() {
-    return this.stack.length == 0;
 }
 
 jsjvm.JavaVM.prototype.getCurrentFrame = function() {
