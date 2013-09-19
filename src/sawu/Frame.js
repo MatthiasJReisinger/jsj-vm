@@ -5,11 +5,11 @@
  * provides access to the local variables, the operand stack, the executed
  * method, the containing class and its runtime constant pool.
  *
- * @param jsjvm.MethodInfo method the method, which is represented by this
+ * @param sawu.MethodInfo method the method, which is represented by this
  * frame
- * @param jsjvm.clazz.Class clazz the class which provides the method
+ * @param sawu.clazz.Class clazz the class which provides the method
  */
-jsjvm.Frame = function(method, clazz) {
+sawu.Frame = function(method, clazz) {
     this.pc = 0;
     this.localVariables = new Array(method.getNumberOfLocalVariables());
     this.operandStack = new Array();
@@ -17,34 +17,34 @@ jsjvm.Frame = function(method, clazz) {
     this.clazz = clazz;
 }
 
-jsjvm.Frame.prototype.getPc = function() {
+sawu.Frame.prototype.getPc = function() {
     return this.pc;
 }
 
-jsjvm.Frame.prototype.incrementPc = function() {
+sawu.Frame.prototype.incrementPc = function() {
     this.pc++;
 }
 
-jsjvm.Frame.prototype.increasePc = function(val) {
+sawu.Frame.prototype.increasePc = function(val) {
     this.pc += val;
 }
 
-jsjvm.Frame.prototype.getLocalVariables = function() {
+sawu.Frame.prototype.getLocalVariables = function() {
     return this.localVariables;
 }
 
-jsjvm.Frame.prototype.getOperandStack = function() {
+sawu.Frame.prototype.getOperandStack = function() {
     return this.operandStack;
 }
 
-jsjvm.Frame.prototype.getMethod = function() {
+sawu.Frame.prototype.getMethod = function() {
     return this.method;
 }
 
-jsjvm.Frame.prototype.getClazz = function() {
+sawu.Frame.prototype.getClazz = function() {
     return this.clazz;
 }
 
-jsjvm.Frame.prototype.getConstantPool = function() {
+sawu.Frame.prototype.getConstantPool = function() {
     return this.clazz.getConstantPool();
 }

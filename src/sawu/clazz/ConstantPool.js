@@ -1,11 +1,11 @@
 /**
  * Represents the runtime constant pool of a java class.
  */
-jsjvm.clazz.ConstantPool = function(entries) {
+sawu.clazz.ConstantPool = function(entries) {
     this.entries = entries;
 }
 
-jsjvm.clazz.ConstantPoolType = {
+sawu.clazz.ConstantPoolType = {
     CONSTANT_Class : 7,
     CONSTANT_Fieldref : 9,
     CONSTANT_Methodref : 10,
@@ -29,23 +29,23 @@ jsjvm.clazz.ConstantPoolType = {
 /**
  * Returns the runtime constant pool entry at the given index.
  */
-jsjvm.clazz.ConstantPool.prototype.getEntry = function(index) {
+sawu.clazz.ConstantPool.prototype.getEntry = function(index) {
     return this.entries[index];
 }
 
-jsjvm.clazz.ConstantPool.prototype.getClassName = function(index) {
+sawu.clazz.ConstantPool.prototype.getClassName = function(index) {
     var entry = this.entries[index];
-    if (entry.tag == jsjvm.clazz.ConstantPoolType.CONSTANT_Class) {
+    if (entry.tag == sawu.clazz.ConstantPoolType.CONSTANT_Class) {
         return this.getString(entry.name_index);
     }
 }
 
-jsjvm.clazz.ConstantPool.prototype.getString = function(index) {
+sawu.clazz.ConstantPool.prototype.getString = function(index) {
     var entry = this.entries[index];
-    if (entry.tag == jsjvm.clazz.ConstantPoolType.CONSTANT_String) {
+    if (entry.tag == sawu.clazz.ConstantPoolType.CONSTANT_String) {
         var utf8Entry = this.entries[entry.string_index];
         return this.getStringFromUtf8(utf8Entry);
-    } else if (entry.tag == jsjvm.clazz.ConstantPoolType.CONSTANT_Utf8) {
+    } else if (entry.tag == sawu.clazz.ConstantPoolType.CONSTANT_Utf8) {
         return this.getStringFromUtf8(entry);
     }
 }
@@ -54,7 +54,7 @@ jsjvm.clazz.ConstantPool.prototype.getString = function(index) {
  * NON-PUBLIC HELPER METHODS
  *****************************************************************************/
 
-jsjvm.clazz.ConstantPool.prototype.getStringFromUtf8 = function(utf8Entry) {
+sawu.clazz.ConstantPool.prototype.getStringFromUtf8 = function(utf8Entry) {
     var stringVal = "";
     for (var i = 0; i < utf8Entry.bytes.length; i++) {
         stringVal += String.fromCharCode(utf8Entry.bytes[i]);

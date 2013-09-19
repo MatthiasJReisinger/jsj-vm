@@ -1,18 +1,18 @@
 /**
- * This parser is used by the main parser (see jsjvm.classloader.Parser) to
+ * This parser is used by the main parser (see sawu.classloader.Parser) to
  * parse the CodeAttribute part of the given class file. It starts parsing
  * at the given offset. Thus the offset has to mark a valid position within
  * the class file, where indeed an code attribute structure begins.
  */
-jsjvm.classloader.CodeAttributeParser = function(classFile, offset) {
+sawu.classloader.CodeAttributeParser = function(classFile, offset) {
     /* call super constructor */
-    jsjvm.classloader.AbstractParser.call(this, classFile, offset);
+    sawu.classloader.AbstractParser.call(this, classFile, offset);
 }
 
-inherit(jsjvm.classloader.CodeAttributeParser, jsjvm.classloader.AbstractParser);
+inherit(sawu.classloader.CodeAttributeParser, sawu.classloader.AbstractParser);
 
-jsjvm.classloader.CodeAttributeParser.prototype.parse = function() {
-    var codeAttribute = new jsjvm.clazz.CodeAttribute();
+sawu.classloader.CodeAttributeParser.prototype.parse = function() {
+    var codeAttribute = new sawu.clazz.CodeAttribute();
     codeAttribute.attribute_name_index = this.parseInt(2);
     codeAttribute.attribute_length = this.parseInt(4);
     codeAttribute.max_stack = this.parseInt(2);
@@ -35,7 +35,7 @@ jsjvm.classloader.CodeAttributeParser.prototype.parse = function() {
     var attributesCount = this.parseInt(2);
     codeAttribute.attributes = new Array(attributesCount);
     for (var i = 0; i < attributesCount; i++) {
-        var attributeParser = new jsjvm.classloader.AttributeInfoParser(this.classFile, this.offset);
+        var attributeParser = new sawu.classloader.AttributeInfoParser(this.classFile, this.offset);
         var attributeInfo = attributeParser.parse();
         this.offset = attributeParser.getOffset();
         codeAttribute.attributes[i] = attributeInfo;

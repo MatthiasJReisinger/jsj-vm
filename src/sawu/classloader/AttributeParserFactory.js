@@ -1,4 +1,4 @@
-jsjvm.classloader.AttributeParserFactory = function() {
+sawu.classloader.AttributeParserFactory = function() {
 }
 
 /**
@@ -10,13 +10,13 @@ jsjvm.classloader.AttributeParserFactory = function() {
  * @param offset the byte offset in the given class file, where the parser
  * should begin to parse
  */
-jsjvm.classloader.AttributeParserFactory.prototype.create = function(positionIndex, classFile, offset) {
+sawu.classloader.AttributeParserFactory.prototype.create = function(positionIndex, classFile, offset) {
     switch (positionIndex) {
         case 0:
-            return new jsjvm.classloader.CodeAttributeParser(classFile, offset);
+            return new sawu.classloader.CodeAttributeParser(classFile, offset);
             break;
         default:
-            return new jsjvm.classloader.AttributeInfoParser(classFile, offset);
+            return new sawu.classloader.AttributeInfoParser(classFile, offset);
             break;
     }
 }

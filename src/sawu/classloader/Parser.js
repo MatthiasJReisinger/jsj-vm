@@ -4,22 +4,22 @@
  *
  * @param classFile the class file to be parsed
  */
-jsjvm.classloader.Parser = function(classFile) {
+sawu.classloader.Parser = function(classFile) {
     /* call super constructor */
-    jsjvm.classloader.AbstractParser.call(this, classFile, 0);
+    sawu.classloader.AbstractParser.call(this, classFile, 0);
 }
 
-inherit(jsjvm.classloader.Parser, jsjvm.classloader.AbstractParser);
+inherit(sawu.classloader.Parser, sawu.classloader.AbstractParser);
 
 ///////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * @return jsjvm.clazz.Class the parsed representation of the given class file.
+ * @return sawu.clazz.Class the parsed representation of the given class file.
  */
-jsjvm.classloader.Parser.prototype.parse = function() {
-    var parsedClass = new jsjvm.clazz.Class();
+sawu.classloader.Parser.prototype.parse = function() {
+    var parsedClass = new sawu.clazz.Class();
 
     parsedClass.magic = this.parseInt(4);
     parsedClass.minor_version = this.parseInt(2);
@@ -40,7 +40,7 @@ jsjvm.classloader.Parser.prototype.parse = function() {
 // NON-PUBLIC HELPER METHODS
 ///////////////////////////////////////////////////////////////////////////////
 
-jsjvm.classloader.Parser.prototype.parseConstantPool = function() {
+sawu.classloader.Parser.prototype.parseConstantPool = function() {
     var constantPoolCount = this.parseInt(2);
     var constantPoolEntries = new Array(constantPoolCount);
     for (var i = 1; i <= constantPoolCount - 1; i++) {
@@ -119,17 +119,17 @@ jsjvm.classloader.Parser.prototype.parseConstantPool = function() {
         constantPoolEntries[i] = info_struct;
     }
     
-    var constantPool = new jsjvm.clazz.ConstantPool(constantPoolEntries);
+    var constantPool = new sawu.clazz.ConstantPool(constantPoolEntries);
     return constantPool;
 }
 
-jsjvm.classloader.Parser.prototype.parseClassName = function(constantPool) {
+sawu.classloader.Parser.prototype.parseClassName = function(constantPool) {
     var this_class = this.parseInt(2);
     var className = constantPool.getClassName(this_class);
     return className;
 }
 
-jsjvm.classloader.Parser.prototype.parseInterfaces = function() {
+sawu.classloader.Parser.prototype.parseInterfaces = function() {
     var interfaceCount = this.parseInt(2);
     /* ignore field interfaces */
     var interfaces = new Array(interfaceCount);
@@ -137,7 +137,7 @@ jsjvm.classloader.Parser.prototype.parseInterfaces = function() {
     return interfaces;
 }
 
-jsjvm.classloader.Parser.prototype.parseFields = function() {
+sawu.classloader.Parser.prototype.parseFields = function() {
     var fieldsCount = this.parseInt(2);
     var fields = new Array(fieldsCount);
     for (var i = 0; i < fieldsCount; i++) {
@@ -168,11 +168,11 @@ jsjvm.classloader.Parser.prototype.parseFields = function() {
     return fields;
 }
 
-jsjvm.classloader.Parser.prototype.parseMethods = function(constantPool) {
+sawu.classloader.Parser.prototype.parseMethods = function(constantPool) {
     var methodsCount = this.parseInt(2);
     var methods = new Array(methodsCount);
     for (var i = 0; i < methodsCount; i++) {
-        var methodInfo = new jsjvm.clazz.MethodInfo();
+        var methodInfo = new sawu.clazz.MethodInfo();
         methodInfo.access_flags = this.parseInt(2);
         methodInfo.name_index = this.parseInt(2);
         methodInfo.name = constantPool.getString(methodInfo.name_index);
@@ -180,7 +180,7 @@ jsjvm.classloader.Parser.prototype.parseMethods = function(constantPool) {
         methodInfo.attributes_count = this.parseInt(2);
         methodInfo.attributes = new Array(methodInfo.attributes_count);
        
-        var attributeParserFactory = new jsjvm.classloader.AttributeParserFactory();
+        var attributeParserFactory = new sawu.classloader.AttributeParserFactory();
         for (var j = 0; j < methodInfo.attributes_count; j++) {
             var attributeParser = attributeParserFactory.create(j, this.classFile, this.offset);
             var attributeInfo = attributeParser.parse();
@@ -193,11 +193,11 @@ jsjvm.classloader.Parser.prototype.parseMethods = function(constantPool) {
     return methods;
 }
 
-jsjvm.classloader.Parser.prototype.parseAttributes = function() {
+sawu.classloader.Parser.prototype.parseAttributes = function() {
     var attributesCount = this.parseInt(2);
     var attributes = new Array(attributesCount);
     for (var i = 0; i < attributesCount; i++) {
-        var attributeInfo = new jsjvm.clazz.AttributeInfo();
+        var attributeInfo = new sawu.clazz.AttributeInfo();
         attributes[i] = attributeInfo;
     }
     return attributes;

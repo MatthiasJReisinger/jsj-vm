@@ -4,7 +4,7 @@
         <meta charset="UTF-8"> 
         <title>jsjVM Test</title>
         <link rel="stylesheet" type="text/css" href="test.css">
-        <script src="../target/jsjvm.js"></script>
+        <script src="../target/sawu.js"></script>
         <script>
             var files = null;
 
@@ -18,9 +18,9 @@
 
             function startVM() {
                 if (files != null) {
-                    new jsjvm.JavaVM('Test', files,
-                                     document.getElementById("screenContent"),
-                                     document.getElementById("debug").checked);
+                    new sawu.JavaVM('Test', files,
+                                    document.getElementById("screenContent"),
+                                    document.getElementById("debug").checked);
                 }
             }
 

@@ -9,7 +9,7 @@
  * @param boolean debug defines, if the Java VM should be started with debug
  * mode turned on or off
  */
-jsjvm.JavaVM = function(className, files, outputElement, debug) {
+sawu.JavaVM = function(className, files, outputElement, debug) {
     this.mainClassName = className;
     this.stack = new Array();
     this.classLoader = null;
@@ -23,31 +23,31 @@ jsjvm.JavaVM = function(className, files, outputElement, debug) {
 // Startup methods
 ////////////////////////////////////////////////////////////////////////////////
 
-jsjvm.JavaVM.prototype.loadFiles = function(files) {
+sawu.JavaVM.prototype.loadFiles = function(files) {
     var reader = new FileReader();
     reader.javaVM = this;
     reader.classFiles = new Array();
-    var classFile = new jsjvm.File(files[0].name);
+    var classFile = new sawu.File(files[0].name);
     reader.classFiles.push(classFile);
-    reader.onload = jsjvm.finishedReading;
+    reader.onload = sawu.finishedReading;
     reader.readAsArrayBuffer(files[0]);
 }
 
-jsjvm.finishedReading = function(evt) {
+sawu.finishedReading = function(evt) {
     var bytes = new Uint8Array(evt.target.result);
     this.classFiles[0].setBytes(bytes);
-    this.javaVM.classLoader = new jsjvm.classloader.ClassLoader(this.classFiles);
+    this.javaVM.classLoader = new sawu.classloader.ClassLoader(this.classFiles);
     this.javaVM.start();
 }
 
-jsjvm.JavaVM.prototype.start = function() {
+sawu.JavaVM.prototype.start = function() {
     /* for performance measuring */
     var startTime = new Date();
 
     /* prepare execution of the main method */
     var mainClass = this.classLoader.loadClass(this.mainClassName);
     var mainMethod = mainClass.getMethod("main");
-    var frame = new jsjvm.Frame(mainMethod, mainClass);
+    var frame = new sawu.Frame(mainMethod, mainClass);
     this.stack.push(frame);
 
     console.log(frame.getMethod().getCode());
@@ -65,7 +65,7 @@ jsjvm.JavaVM.prototype.start = function() {
 // Interpreter methods
 ////////////////////////////////////////////////////////////////////////////////
 
-jsjvm.JavaVM.prototype.execute = function() {
+sawu.JavaVM.prototype.execute = function() {
     while (this.stack.length > 0) {
         var opCode = this.readNextOpCode();
         var instruction = this["op" + opCode];
@@ -82,12 +82,12 @@ jsjvm.JavaVM.prototype.execute = function() {
     this.println("finished execution");
 }
 
-jsjvm.JavaVM.prototype.getCurrentFrame = function() {
+sawu.JavaVM.prototype.getCurrentFrame = function() {
     var stackSize = this.stack.length;
     return this.stack[stackSize - 1];
 }
 
-jsjvm.JavaVM.prototype.readNextOpCode = function() {
+sawu.JavaVM.prototype.readNextOpCode = function() {
     var frame = this.getCurrentFrame();
     var method = frame.getMethod();
     var code = method.getCode();
@@ -96,30 +96,30 @@ jsjvm.JavaVM.prototype.readNextOpCode = function() {
     return opCode;
 }
 
-jsjvm.JavaVM.prototype.readUnsignedByte = function() {
+sawu.JavaVM.prototype.readUnsignedByte = function() {
     return this.readUnsignedIntegral(1);
 }
 
-jsjvm.JavaVM.prototype.readSignedByte = function() {
+sawu.JavaVM.prototype.readSignedByte = function() {
     return this.readSignedIntegral(1);
 }
 
-jsjvm.JavaVM.prototype.readUnsignedShort = function() {
+sawu.JavaVM.prototype.readUnsignedShort = function() {
     return this.readUnsignedIntegral(2);
 }
 
-jsjvm.JavaVM.prototype.readSignedShort = function() {
+sawu.JavaVM.prototype.readSignedShort = function() {
     return this.readSignedIntegral(2);
 }
 
-jsjvm.JavaVM.prototype.readUnsignedInt = function() {
+sawu.JavaVM.prototype.readUnsignedInt = function() {
     return this.readUnsignedIntegral(4);
 }
 
-jsjvm.JavaVM.prototype.readUnsignedIntegral = function(numberOfBytes) {
+sawu.JavaVM.prototype.readUnsignedIntegral = function(numberOfBytes) {
     var frame = this.getCurrentFrame();
     var bytes = frame.getMethod().getCode();
-    var value = jsjvm.getIntFromBytes(bytes, frame.getPc(), numberOfBytes);
+    var value = sawu.getIntFromBytes(bytes, frame.getPc(), numberOfBytes);
     this.getCurrentFrame().increasePc(numberOfBytes);
     return value;
 }
@@ -128,7 +128,7 @@ jsjvm.JavaVM.prototype.readUnsignedIntegral = function(numberOfBytes) {
  * Reads the next numberOfBytes bytes. It sign extends the parsed value
  * using two's complement.
  */
-jsjvm.JavaVM.prototype.readSignedIntegral = function(numberOfBytes) {
+sawu.JavaVM.prototype.readSignedIntegral = function(numberOfBytes) {
     var uIntegral = this.readUnsignedIntegral(numberOfBytes);
     return uIntegral - 2 * ((1<<(numberOfBytes * 8) - 1) & uIntegral);
 }
@@ -137,28 +137,28 @@ jsjvm.JavaVM.prototype.readSignedIntegral = function(numberOfBytes) {
 // Logging
 ////////////////////////////////////////////////////////////////////////////////
 
-jsjvm.JavaVM.prototype.abort = function(message) {
+sawu.JavaVM.prototype.abort = function(message) {
     this.println("[ERROR] " + message);
     throw "JavaVM Error";
 }
 
-jsjvm.JavaVM.prototype.log = function(message) {
+sawu.JavaVM.prototype.log = function(message) {
     if (this.debug) {
         this.println(message);
     }
 }
 
-jsjvm.JavaVM.prototype.println = function(message) {
+sawu.JavaVM.prototype.println = function(message) {
     var line = document.createElement("div");
     line.innerHTML = "> " + message;
     this.outputElement.appendChild(line);
 }
 
-jsjvm.JavaVM.prototype.print = function(message) {
+sawu.JavaVM.prototype.print = function(message) {
     this.outputElement.innerHTML += message;
 }
 
-jsjvm.JavaVM.prototype.logCurrentFrame = function() {
+sawu.JavaVM.prototype.logCurrentFrame = function() {
     if (this.debug) {
         var frame = this.getCurrentFrame();
         if (frame) {
@@ -173,7 +173,7 @@ jsjvm.JavaVM.prototype.logCurrentFrame = function() {
     }
 }
 
-jsjvm.JavaVM.prototype.arrayToString = function(arrayToPrint) {
+sawu.JavaVM.prototype.arrayToString = function(arrayToPrint) {
     var arrayString = "";
     for (var i = 0; i < arrayToPrint.length; i++) {
         arrayString += i + ": ";
@@ -196,63 +196,63 @@ jsjvm.JavaVM.prototype.arrayToString = function(arrayToPrint) {
 /**
  * aconst_null
  */
-jsjvm.JavaVM.prototype.op1 = function() {
+sawu.JavaVM.prototype.op1 = function() {
     this.getCurrentFrame().getOperandStack().push(null);
 }
 
 /**
  * iconst_m1
  */
-jsjvm.JavaVM.prototype.op2 = function() {
+sawu.JavaVM.prototype.op2 = function() {
     this.getCurrentFrame().getOperandStack().push(-1);
 }
 
 /**
  * iconst_0
  */
-jsjvm.JavaVM.prototype.op3 = function() {
+sawu.JavaVM.prototype.op3 = function() {
     this.getCurrentFrame().getOperandStack().push(0);
 }
 
 /**
  * iconst_1
  */
-jsjvm.JavaVM.prototype.op4 = function() {
+sawu.JavaVM.prototype.op4 = function() {
     this.getCurrentFrame().getOperandStack().push(1);
 }
 
 /**
  * iconst_2
  */
-jsjvm.JavaVM.prototype.op5 = function() {
+sawu.JavaVM.prototype.op5 = function() {
     this.getCurrentFrame().getOperandStack().push(2);
 }
 
 /**
  * iconst_3
  */
-jsjvm.JavaVM.prototype.op6 = function() {
+sawu.JavaVM.prototype.op6 = function() {
     this.getCurrentFrame().getOperandStack().push(3);
 }
 
 /**
  * iconst_4
  */
-jsjvm.JavaVM.prototype.op7 = function() {
+sawu.JavaVM.prototype.op7 = function() {
     this.getCurrentFrame().getOperandStack().push(4);
 }
 
 /**
  * iconst_5
  */
-jsjvm.JavaVM.prototype.op8 = function() {
+sawu.JavaVM.prototype.op8 = function() {
     this.getCurrentFrame().getOperandStack().push(5);
 }
 
 /**
  * bipush
  */
-jsjvm.JavaVM.prototype.op16 = function() {
+sawu.JavaVM.prototype.op16 = function() {
     var byteVal = this.readSignedByte();
     this.getCurrentFrame().getOperandStack().push(byteVal);
 }
@@ -260,7 +260,7 @@ jsjvm.JavaVM.prototype.op16 = function() {
 /**
  * sipush
  */
-jsjvm.JavaVM.prototype.op17 = function() {
+sawu.JavaVM.prototype.op17 = function() {
     var shortVal = this.readSignedShort();
     this.getCurrentFrame().getOperandStack().push(shortVal);
 }
@@ -268,7 +268,7 @@ jsjvm.JavaVM.prototype.op17 = function() {
 /**
  * iload
  */
-jsjvm.JavaVM.prototype.op21 = function() {
+sawu.JavaVM.prototype.op21 = function() {
     var index = this.readUnsignedByte();
     this.iload(index);
 }
@@ -276,35 +276,35 @@ jsjvm.JavaVM.prototype.op21 = function() {
 /**
  * iload_0
  */
-jsjvm.JavaVM.prototype.op26 = function() {
+sawu.JavaVM.prototype.op26 = function() {
     this.iload(0);
 }
 
 /**
  * iload_1
  */
-jsjvm.JavaVM.prototype.op27 = function() {
+sawu.JavaVM.prototype.op27 = function() {
     this.iload(1);
 }
 
 /**
  * iload_2
  */
-jsjvm.JavaVM.prototype.op28 = function() {
+sawu.JavaVM.prototype.op28 = function() {
     this.iload(2);
 }
 
 /**
  * iload_3
  */
-jsjvm.JavaVM.prototype.op29 = function() {
+sawu.JavaVM.prototype.op29 = function() {
     this.iload(3);
 }
 
 /**
  * helper function for the "iload" operations
  */
-jsjvm.JavaVM.prototype.iload = function(index) {
+sawu.JavaVM.prototype.iload = function(index) {
     var localVariables = this.getCurrentFrame().getLocalVariables()
     var value = localVariables[index];
     this.getCurrentFrame().getOperandStack().push(value);
@@ -313,7 +313,7 @@ jsjvm.JavaVM.prototype.iload = function(index) {
 /**
  * istore
  */
-jsjvm.JavaVM.prototype.op54 = function() {
+sawu.JavaVM.prototype.op54 = function() {
     var index = this.readUnsignedByte();
     this.istore(index);
 }
@@ -321,35 +321,35 @@ jsjvm.JavaVM.prototype.op54 = function() {
 /**
  * istore_0
  */
-jsjvm.JavaVM.prototype.op59 = function() {
+sawu.JavaVM.prototype.op59 = function() {
     this.istore(0);
 }
 
 /**
  * istore_1
  */
-jsjvm.JavaVM.prototype.op60 = function() {
+sawu.JavaVM.prototype.op60 = function() {
     this.istore(1);
 }
 
 /**
  * istore_2
  */
-jsjvm.JavaVM.prototype.op61 = function() {
+sawu.JavaVM.prototype.op61 = function() {
     this.istore(2);
 }
 
 /**
  * istore_3
  */
-jsjvm.JavaVM.prototype.op62 = function() {
+sawu.JavaVM.prototype.op62 = function() {
     this.istore(3);
 }
 
 /**
  * helper function for the "istore" operations
  */
-jsjvm.JavaVM.prototype.istore = function(index) {
+sawu.JavaVM.prototype.istore = function(index) {
     var frame = this.getCurrentFrame();
     var value = frame.getOperandStack().pop();
     frame.getLocalVariables()[index] = value;
@@ -358,7 +358,7 @@ jsjvm.JavaVM.prototype.istore = function(index) {
 /**
  * iadd
  */
-jsjvm.JavaVM.prototype.op96 = function() {
+sawu.JavaVM.prototype.op96 = function() {
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
     var value1 = operandStack.pop();
@@ -369,7 +369,7 @@ jsjvm.JavaVM.prototype.op96 = function() {
 /**
  * isub
  */
-jsjvm.JavaVM.prototype.op100 = function() {
+sawu.JavaVM.prototype.op100 = function() {
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
     var value1 = operandStack.pop();
@@ -380,7 +380,7 @@ jsjvm.JavaVM.prototype.op100 = function() {
 /**
  * imul
  */
-jsjvm.JavaVM.prototype.op104 = function() {
+sawu.JavaVM.prototype.op104 = function() {
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
     var value1 = operandStack.pop();
@@ -391,7 +391,7 @@ jsjvm.JavaVM.prototype.op104 = function() {
 /**
  * idiv
  */
-jsjvm.JavaVM.prototype.op108 = function() {
+sawu.JavaVM.prototype.op108 = function() {
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
     var value1 = operandStack.pop();
@@ -402,7 +402,7 @@ jsjvm.JavaVM.prototype.op108 = function() {
 /**
  * ishl
  */
-jsjvm.JavaVM.prototype.op120 = function() {
+sawu.JavaVM.prototype.op120 = function() {
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
     var value1 = operandStack.pop();
@@ -413,7 +413,7 @@ jsjvm.JavaVM.prototype.op120 = function() {
 /**
  * ishr
  */
-jsjvm.JavaVM.prototype.op122 = function() {
+sawu.JavaVM.prototype.op122 = function() {
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
     var value1 = operandStack.pop();
@@ -424,7 +424,7 @@ jsjvm.JavaVM.prototype.op122 = function() {
 /**
  * iand
  */
-jsjvm.JavaVM.prototype.op126 = function() {
+sawu.JavaVM.prototype.op126 = function() {
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
     var value1 = operandStack.pop();
@@ -435,7 +435,7 @@ jsjvm.JavaVM.prototype.op126 = function() {
 /**
  * iinc
  */
-jsjvm.JavaVM.prototype.op132 = function() {
+sawu.JavaVM.prototype.op132 = function() {
     var index = this.readUnsignedByte();
     var constant = this.readSignedByte();
     this.getCurrentFrame().getLocalVariables()[index] += constant;
@@ -444,7 +444,7 @@ jsjvm.JavaVM.prototype.op132 = function() {
 /**
  * ifge
  */
-jsjvm.JavaVM.prototype.op156 = function() {
+sawu.JavaVM.prototype.op156 = function() {
     var branchOffset = this.readBranchOffset();
     var value = this.getCurrentFrame().getOperandStack().pop();
     if (value >= 0) {
@@ -455,7 +455,7 @@ jsjvm.JavaVM.prototype.op156 = function() {
 /**
  * if_icmpeq
  */
-jsjvm.JavaVM.prototype.op159 = function() {
+sawu.JavaVM.prototype.op159 = function() {
     this.if_cmp(function(value1, value2) {
         return value1 == value2;
     });
@@ -464,7 +464,7 @@ jsjvm.JavaVM.prototype.op159 = function() {
 /**
  * if_icmpne
  */
-jsjvm.JavaVM.prototype.op160 = function() {
+sawu.JavaVM.prototype.op160 = function() {
     this.if_cmp(function(value1, value2) {
         return value1 != value2;
     });
@@ -473,7 +473,7 @@ jsjvm.JavaVM.prototype.op160 = function() {
 /**
  * if_icmpge
  */
-jsjvm.JavaVM.prototype.op162 = function() {
+sawu.JavaVM.prototype.op162 = function() {
     this.if_cmp(function(value1, value2) {
         return value1 >= value2;
     });
@@ -482,7 +482,7 @@ jsjvm.JavaVM.prototype.op162 = function() {
 /**
  * if_icmple
  */
-jsjvm.JavaVM.prototype.op164 = function() {
+sawu.JavaVM.prototype.op164 = function() {
     this.if_cmp(function(value1, value2) {
         return value1 <= value2;
     });
@@ -491,7 +491,7 @@ jsjvm.JavaVM.prototype.op164 = function() {
 /**
  * helper for the if_icmp* operations
  */
-jsjvm.JavaVM.prototype.if_cmp = function(compareFunction) {
+sawu.JavaVM.prototype.if_cmp = function(compareFunction) {
     var branchOffset = this.readBranchOffset();
     var operandStack = this.getCurrentFrame().getOperandStack();
     var value2 = operandStack.pop();
@@ -504,7 +504,7 @@ jsjvm.JavaVM.prototype.if_cmp = function(compareFunction) {
 /**
  * goto
  */
-jsjvm.JavaVM.prototype.op167 = function() {
+sawu.JavaVM.prototype.op167 = function() {
     var branchOffset = this.readBranchOffset();
     this.getCurrentFrame().increasePc(branchOffset);
 }
@@ -512,14 +512,14 @@ jsjvm.JavaVM.prototype.op167 = function() {
 /**
  * helper function for the control transfer instructions
  */
-jsjvm.JavaVM.prototype.readBranchOffset = function() {
+sawu.JavaVM.prototype.readBranchOffset = function() {
     return this.readSignedIntegral(2) - 3;
 }
 
 /**
  * ireturn
  */
-jsjvm.JavaVM.prototype.op172 = function() {
+sawu.JavaVM.prototype.op172 = function() {
     var returnValue = this.getCurrentFrame().getOperandStack().pop();
     this.stack.pop();
     this.getCurrentFrame().getOperandStack().push(returnValue);
@@ -528,14 +528,14 @@ jsjvm.JavaVM.prototype.op172 = function() {
 /**
  * return
  */
-jsjvm.JavaVM.prototype.op177 = function() {
+sawu.JavaVM.prototype.op177 = function() {
     this.stack.pop();
 }
 
 /**
  * getstatic
  */
-jsjvm.JavaVM.prototype.op178 = function() {
+sawu.JavaVM.prototype.op178 = function() {
     /* Skip the following two bytes. */
     this.getCurrentFrame().increasePc(2);
 
@@ -546,7 +546,7 @@ jsjvm.JavaVM.prototype.op178 = function() {
 /**
  * invokevirtual
  */
-jsjvm.JavaVM.prototype.op182 = function() {
+sawu.JavaVM.prototype.op182 = function() {
     /* Skip the following two bytes. */
     this.getCurrentFrame().increasePc(2);
     this.println("System.out.println(): " + this.getCurrentFrame().getOperandStack().pop());
@@ -555,7 +555,7 @@ jsjvm.JavaVM.prototype.op182 = function() {
 /**
  * invokestatic
  */
-jsjvm.JavaVM.prototype.op184 = function() {
+sawu.JavaVM.prototype.op184 = function() {
     var constantPoolIndex = this.readUnsignedShort();
     var constantPool = this.getCurrentFrame().getConstantPool();
     
@@ -567,7 +567,7 @@ jsjvm.JavaVM.prototype.op184 = function() {
     var method = this.getCurrentFrame().getClazz().getMethod(methodName);
 
     /* the new frame that will be pushed onto the stack */
-    var frame = new jsjvm.Frame(method, this.getCurrentFrame().getClazz());
+    var frame = new sawu.Frame(method, this.getCurrentFrame().getClazz());
 
     /* get the number of arguments for the method to invoke */
     var operandStack = this.getCurrentFrame().getOperandStack();

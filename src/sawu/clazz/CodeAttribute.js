@@ -3,9 +3,9 @@
  * information like the actual bytecode of the corresponding
  * method, code length, etc.
  */
-jsjvm.clazz.CodeAttribute = function() {
+sawu.clazz.CodeAttribute = function() {
     /* call super constructor */
-    jsjvm.clazz.AttributeInfo.call(this);
+    sawu.clazz.AttributeInfo.call(this);
     
     var max_stack;
     var max_locals;
@@ -17,4 +17,4 @@ jsjvm.clazz.CodeAttribute = function() {
     var attributes;
 }
 
-inherit(jsjvm.clazz.CodeAttribute, jsjvm.clazz.AttributeInfo);
+inherit(sawu.clazz.CodeAttribute, sawu.clazz.AttributeInfo);
